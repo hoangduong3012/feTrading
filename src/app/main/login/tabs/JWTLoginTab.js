@@ -16,7 +16,7 @@ import _ from '@lodash';
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-  email: yup.string().email('You must enter a valid email').required('You must enter a email'),
+  identifier: yup.string().email('You must enter a valid email').required('You must enter a email'),
   password: yup
     .string()
     .required('Please enter your password.')
@@ -24,7 +24,7 @@ const schema = yup.object().shape({
 });
 
 const defaultValues = {
-  email: '',
+  identifier: '',
   password: '',
 };
 
@@ -42,8 +42,8 @@ function JWTLoginTab(props) {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    setValue('email', 'admin@fusetheme.com', { shouldDirty: true, shouldValidate: true });
-    setValue('password', 'admin', { shouldDirty: true, shouldValidate: true });
+    setValue('identifier', 'quanghoang3012@gmail.com', { shouldDirty: true, shouldValidate: true });
+    setValue('password', 'Hd189420', { shouldDirty: true, shouldValidate: true });
   }, [reset, setValue, trigger]);
 
   useEffect(() => {
@@ -63,7 +63,7 @@ function JWTLoginTab(props) {
     <div className="w-full">
       <form className="flex flex-col justify-center w-full" onSubmit={handleSubmit(onSubmit)}>
         <Controller
-          name="email"
+          name="identifier"
           control={control}
           render={({ field }) => (
             <TextField

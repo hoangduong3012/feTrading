@@ -5,10 +5,10 @@ import jwtService from 'app/services/jwtService';
 import { setUserData } from './userSlice';
 
 export const submitLogin =
-  ({ email, password }) =>
+  ({ identifier, password }) =>
   async (dispatch) => {
     return jwtService
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(identifier, password)
       .then((user) => {
         dispatch(setUserData(user));
 

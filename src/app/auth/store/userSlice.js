@@ -81,12 +81,14 @@ export const setUserData = (user) => async (dispatch, getState) => {
   */
   if (user.loginRedirectUrl) {
     settingsConfig.loginRedirectUrl = user.loginRedirectUrl; // for example 'apps/academy'
+  } else {
+    settingsConfig.loginRedirectUrl = '/example';
   }
 
   /*
   Set User Settings
   */
-  dispatch(setDefaultSettings(user.data.settings));
+  // dispatch(setDefaultSettings(user.data.settings));
 
   dispatch(setUser(user));
 };
@@ -205,7 +207,9 @@ const userSlice = createSlice({
   name: 'auth/user',
   initialState,
   reducers: {
-    setUser: (state, action) => action.payload,
+    setUser: (state, action) => {
+      return { ...state, data: action.payload };
+    },
     userLoggedOut: (state, action) => initialState,
   },
   extraReducers: {},

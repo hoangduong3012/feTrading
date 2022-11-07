@@ -63,11 +63,9 @@ class JwtService extends FuseUtils.EventEmitter {
   signInWithEmailAndPassword = (identifier, password) => {
     return new Promise((resolve, reject) => {
       axios
-        .get(`${process.env.REACT_APP_SERVER_API}/api/auth/local`, {
-          data: {
-            identifier,
-            password,
-          },
+        .post(`${process.env.REACT_APP_SERVER_API}/api/auth/local`, {
+          identifier,
+          password,
         })
         .then((response) => {
           if (response.data.user) {
