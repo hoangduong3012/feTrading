@@ -14,6 +14,7 @@ const ExampleConfig = {
       config: {},
     },
   },
+  auth: ["admin"],
   routes: [
     {
       path: 'example',

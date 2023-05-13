@@ -5,11 +5,13 @@ import { connect } from 'react-redux';
 import { matchRoutes } from 'react-router-dom';
 import withRouter from '@fuse/core/withRouter';
 import settingsConfig from 'app/fuse-configs/settingsConfig';
+import { setFirstAccess } from 'app/auth/store/loginSlice';
+import history from '@history';
 
 class FuseAuthorization extends Component {
   constructor(props, context) {
     super(props);
-    const { routes } = context;
+    const { routes, isFirstAccess } = context;
     this.state = {
       accessGranted: true,
       routes,
@@ -34,9 +36,11 @@ class FuseAuthorization extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { location, userRole } = props;
+    const { location, userRole, isFirstAccess, setFirstAccess } = props;
     const { pathname } = location;
 
+    if (isFirstAccess) 
+      setFirstAccess(false);
     const matchedRoutes = matchRoutes(state.routes, pathname);
 
     const matched = matchedRoutes ? matchedRoutes[0] : false;
@@ -57,7 +61,7 @@ class FuseAuthorization extends Component {
         User is guest
         Redirect to Login Page
         */
-    if (!userRole || userRole.length === 0) {
+    if (!userRole) {
       navigate({
         pathname: '/login',
       });
@@ -68,25 +72,33 @@ class FuseAuthorization extends Component {
         User must be on unAuthorized page or just logged in
         Redirect to dashboard or loginRedirectUrl
         */
-      navigate({
-        pathname: loginRedirectUrl,
-      });
+
+        navigate({
+          pathname: loginRedirectUrl,
+        });
       settingsConfig.loginRedirectUrl = this.defaultLoginRedirectUrl;
     }
   }
 
   render() {
     // console.info('Fuse Authorization rendered', this.state.accessGranted);
-    return this.state.accessGranted ? <>{this.props.children}</> : null;
+    return this.state.accessGranted || this.props.isFirstAccess ? <>{this.props.children}</> : null;
   }
 }
 
 function mapStateToProps({ auth }) {
   return {
     userRole: auth.user.role,
+    isFirstAccess: auth.login.isFirstAccess
   };
 }
 
+const mapDispatchToProps = dispatch => ({
+  setFirstAccess: source => {
+  dispatch(setFirstAccess(source));
+  },
+});
+
 FuseAuthorization.contextType = AppContext;
 
-export default withRouter(connect(mapStateToProps)(FuseAuthorization));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FuseAuthorization));

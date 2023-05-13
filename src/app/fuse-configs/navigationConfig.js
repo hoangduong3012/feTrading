@@ -23,6 +23,14 @@ const navigationConfig = [
         icon: 'whatshot',
         url: 'example',
       },
+      {
+        id: 'history-trading-component',
+        title: 'HistoryTrading',
+        translate: 'HISTORYTRADING',
+        type: 'item',
+        icon: 'whatshot',
+        url: 'historyTrading',
+      },
     ],
   },
 ];

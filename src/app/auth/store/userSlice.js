@@ -89,8 +89,7 @@ export const setUserData = (user) => async (dispatch, getState) => {
   Set User Settings
   */
   // dispatch(setDefaultSettings(user.data.settings));
-
-  dispatch(setUser(user));
+  dispatch(setUser({ user, role: ['admin']}));
 };
 
 export const updateUserSettings = (settings) => async (dispatch, getState) => {
@@ -196,9 +195,9 @@ export const updateUserData = (user) => async (dispatch, getState) => {
 const initialState = {
   role: [], // guest
   data: {
-    displayName: 'John Doe',
+    displayName: 'Hoang Bui',
     photoURL: 'assets/images/avatars/Velazquez.jpg',
-    email: 'johndoe@withinpixels.com',
+    email: 'quanghoang3012@gmail.com',
     shortcuts: ['calendar', 'mail', 'contacts', 'todo'],
   },
 };
@@ -208,7 +207,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      return { ...state, data: action.payload };
+      return { ...state, data: action.payload.user, role:  action.payload.role};
     },
     userLoggedOut: (state, action) => initialState,
   },

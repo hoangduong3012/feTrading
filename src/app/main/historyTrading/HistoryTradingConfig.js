@@ -8,12 +8,13 @@ i18next.addResourceBundle('en', 'historyTrading', en);
 i18next.addResourceBundle('tr', 'historyTrading', tr);
 i18next.addResourceBundle('ar', 'historyTrading', ar);
 
-const ExampleConfig = {
+const HistoryTradingConfig = {
   settings: {
     layout: {
       config: {},
     },
   },
+  auth: ["admin"],
   routes: [
     {
       path: 'historyTrading',
@@ -22,7 +23,7 @@ const ExampleConfig = {
   ],
 };
 
-export default ExampleConfig;
+export default HistoryTradingConfig;
 
 /**
  * Lazy load Example

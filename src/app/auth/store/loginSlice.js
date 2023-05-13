@@ -11,7 +11,6 @@ export const submitLogin =
       .signInWithEmailAndPassword(identifier, password)
       .then((user) => {
         dispatch(setUserData(user));
-
         return dispatch(loginSuccess());
       })
       .catch((errors) => {
@@ -68,6 +67,7 @@ export const submitLoginWithFireBase =
 const initialState = {
   success: false,
   errors: [],
+  isFirstAccess: true
 };
 
 const loginSlice = createSlice({
@@ -82,10 +82,13 @@ const loginSlice = createSlice({
       state.success = false;
       state.errors = action.payload;
     },
+    setFirstAccess: (state, action) => {
+      return { ...state, isFirstAccess: action.payload};
+    },
   },
   extraReducers: {},
 });
 
-export const { loginSuccess, loginError } = loginSlice.actions;
+export const { loginSuccess, loginError, setFirstAccess } = loginSlice.actions;
 
 export default loginSlice.reducer;
