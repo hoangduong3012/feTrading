@@ -10,11 +10,11 @@ export default class HistoryTradingService {
         query
       }).then((result = {}) => {
         const { data, meta } = result;
-        // if (status === 200) {
-        //   return resolve({ isSuccess: true, data });
-        // } else {
-        //   return resolve({ isSuccess: false, message });
-        // }
+        if (data) {
+          return resolve({ isSuccess: true, data, meta });
+        } else {
+          return resolve({ isSuccess: false, message });
+        }
       });
     });
   }

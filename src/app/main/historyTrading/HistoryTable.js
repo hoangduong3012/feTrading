@@ -3,6 +3,7 @@ import { styled } from '@mui/system';
 import TablePaginationUnstyled from '@mui/base/TablePaginationUnstyled';
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchHistoryTradingList } from './store/historyTradingSlice'
+import moment from 'moment';
 
 function createData(name, calories, fat) {
   return { name, calories, fat };
@@ -53,7 +54,7 @@ const CustomTablePagination = styled(TablePaginationUnstyled)`
 export default function UnstyledTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  //const goldLessionList = useSelector(({ historyTrading }) => historyTrading.goldLessionList);
+  const goldLessionList = useSelector(({ historyTrading }) => historyTrading.goldLessionList);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchHistoryTradingList());
@@ -71,34 +72,45 @@ export default function UnstyledTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  useEffect
   return (
+    goldLessionList.length > 0 ? 
     <Root>
       <table style={{ minWidth: 500 }} aria-label="custom pagination table">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Personal Ideal</th>
-            <th>Type</th>
-            <th>Author</th>
-            <th>Time lession</th>
-            <th>Images</th>
+            <th>TITLE</th>
+            <th>DESCRIPTION</th>
+            <th>PERSONAL IDEAL</th>
+            <th>TYPE</th>
+            <th>AUTHOR</th>
+            <th>TIME LESSION</th>
+            <th>IMAGES</th>
           </tr>
         </thead>
         <tbody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
+          {(goldLessionList.length > 0
+            ? goldLessionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : goldLessionList
           ).map((row) => (
-            <tr key={row.name}>
-              <td>{row.name}</td>
+            <tr key={row.id}>
+              <td>{row.attributes.title}</td>
               <td style={{ width: 160 }} align="right">
-                {row.calories}
+                {row.attributes.description}
               </td>
               <td style={{ width: 160 }} align="right">
-                {row.fat}
+                {row.attributes.personal_ideal}
+              </td>
+              <td style={{ width: 160 }} align="right">
+                {row.attributes.type}
+              </td>
+              <td style={{ width: 160 }} align="right">
+                {row.attributes.author}
+              </td>
+              <td style={{ width: 160 }} align="right">
+                {moment(row.attributes.time_lession).format("DD-MM-YYYY HH:MM:ss")}
+              </td>
+              <td style={{ width: 160 }} align="right">
+                {row.attributes.images ? row.attributes.images : ''}
               </td>
             </tr>
           ))}
@@ -132,6 +144,6 @@ export default function UnstyledTable() {
           </tr>
         </tfoot>
       </table>
-    </Root>
+    </Root> : <></>
   );
 }

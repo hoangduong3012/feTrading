@@ -5,13 +5,14 @@ export const fetchHistoryTradingList = createAsyncThunk(
   HISTORYTRADING_URL, 
   async () => {
      const response = await HistoryTradingService.getList()
-     return response.data
+     return response
   });
 
 const historyTradingSlice = createSlice({
   name: 'historyTrading',
   initialState: {
     goldLessionList:[],
+    meta: {},
     loading: IDEAL,
     error: {}
   },
@@ -26,15 +27,26 @@ const historyTradingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchHistoryTradingList.pending, (state, action) => {
-      state.loading = 'pending';
+      return {
+        ...state,
+        loading: 'pending',
+      };
     })
     builder.addCase(fetchHistoryTradingList.fulfilled, (state, action) => {
-      state.loading = 'success';
-      state.goldLessionList.push(action.payload)
+      return {
+        ...state,
+        goldLessionList: action.payload.data,
+        meta: action.payload.meta,
+        loading: 'success',
+      };
     })
     builder.addCase(fetchHistoryTradingList.rejected, (state, action) => {
-      state.loading = 'error'
-      state.error = action.error
+      return {
+        ...state,
+        goldLessionList: action.payload.data,
+        meta: action.payload.meta,
+        loading: 'error',
+      };
     })
   }
 });
