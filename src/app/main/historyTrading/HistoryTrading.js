@@ -26,13 +26,12 @@ function HistoryTradingPage(props) {
       }
       contentToolbar={
         <div className="px-24">
-          
           <h4>Search Toolbar</h4>
         </div>
       }
       content={
         <div className="p-24">
-          <h4>Trading table</h4>
+          <h4>Trading table Detail</h4>
           <HistoryTable />
           <br />
           {/* <DemoContent /> */}

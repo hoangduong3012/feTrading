@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { styled } from '@mui/system';
 import TablePaginationUnstyled from '@mui/base/TablePaginationUnstyled';
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchHistoryTradingList } from './store/historyTradingSlice'
+import history from '@history';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import { fetchHistoryTradingList } from './store/historyTradingSlice';
 
 function createData(name, calories, fat) {
   return { name, calories, fat };
@@ -58,11 +59,9 @@ export default function UnstyledTable() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchHistoryTradingList());
-    //setFullName({name:'TrungHC',familyName: 'HCT'});
-    }, []);
+  }, []);
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -72,8 +71,12 @@ export default function UnstyledTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  return (
-    goldLessionList.length > 0 ? 
+  const handleClick = (id) => {
+    history.push({
+      pathname: `/historyTradingDetail/${id}`,
+    });
+  };
+  return goldLessionList.length > 0 ? (
     <Root>
       <table style={{ minWidth: 500 }} aria-label="custom pagination table">
         <thead>
@@ -92,7 +95,7 @@ export default function UnstyledTable() {
             ? goldLessionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : goldLessionList
           ).map((row) => (
-            <tr key={row.id}>
+            <tr key={row.id} onClick={() => handleClick(row.id)}>
               <td>{row.attributes.title}</td>
               <td style={{ width: 160 }} align="right">
                 {row.attributes.description}
@@ -107,7 +110,7 @@ export default function UnstyledTable() {
                 {row.attributes.author}
               </td>
               <td style={{ width: 160 }} align="right">
-                {moment(row.attributes.time_lession).format("DD-MM-YYYY HH:MM:ss")}
+                {moment(row.attributes.time_lession).format('DD-MM-YYYY HH:MM:ss')}
               </td>
               <td style={{ width: 160 }} align="right">
                 {row.attributes.images ? row.attributes.images : ''}
@@ -144,6 +147,8 @@ export default function UnstyledTable() {
           </tr>
         </tfoot>
       </table>
-    </Root> : <></>
+    </Root>
+  ) : (
+    <></>
   );
 }

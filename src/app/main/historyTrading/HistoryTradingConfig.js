@@ -1,5 +1,6 @@
 import i18next from 'i18next';
 import HistoryTrading from './HistoryTrading';
+import HistoryTradingDetail from './HistoryTradingDetail';
 import en from './i18n/en';
 import tr from './i18n/tr';
 import ar from './i18n/ar';
@@ -19,6 +20,10 @@ const HistoryTradingConfig = {
     {
       path: 'historyTrading',
       element: <HistoryTrading />,
+    },
+    {
+      path: 'historyTradingDetail/:id',
+      element: <HistoryTradingDetail />,
     },
   ],
 };
