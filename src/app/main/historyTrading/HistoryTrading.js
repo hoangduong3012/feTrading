@@ -1,5 +1,8 @@
-import DemoContent from '@fuse/core/DemoContent';
 import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import clsx from 'clsx';
+import history from '@history';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import FusePageSimple from '@fuse/core/FusePageSimple';
 import { useTranslation } from 'react-i18next';
 import withReducer from 'app/store/withReducer';
@@ -15,8 +18,13 @@ const Root = styled(FusePageSimple)({
 });
 
 function HistoryTradingPage(props) {
+  const { navigate } = props;
   const { t } = useTranslation('historyTrading');
-
+  const handleClickAdd = () => {
+    history.push({
+      pathname: '/',
+    });
+  }
   return (
     <Root
       header={
@@ -27,6 +35,19 @@ function HistoryTradingPage(props) {
       contentToolbar={
         <div className="px-24">
           <h4>Search Toolbar</h4>
+          <div>
+            {' '}
+            <Button
+              className={clsx('', 'abc')}
+              variant="contained"
+              size="large"
+              color="primary"
+              endIcon={<AddBoxIcon />}
+              onClick={handleClickAdd}
+            >
+              <span>Add new</span>
+            </Button>
+          </div>
         </div>
       }
       content={
