@@ -11,13 +11,17 @@ import {
   IconButton,
   InputAdornment,
 } from '@mui/material';
+import { Editor } from '@tinymce/tinymce-react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ImageConfig } from '@fuse/default-settings/FileConfig';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
+import { HOST_URL } from 'app/constant/index';
 import { Controller, useForm, useController } from 'react-hook-form';
+import axios from 'axios';
 import { fetchHistoryTradingList } from './store/historyTradingSlice';
+
 // 👇 Custom Styles for the Box Component
 const CustomBox = styled(Box)({
   '&.MuiBox-root': {
@@ -58,13 +62,13 @@ export default function Edit() {
     resolver: yupResolver(schema),
   });
   const wrapperRef = useRef(null);
-  const { field } = useController({ control });
+  const { field: newField } = useController({ control });
   const dispatch = useDispatch();
 
   const onSubmit = (value) => {
     console.log(value);
   };
-
+  const editorRef = useRef(null);
   const handleChangeSelect = (value) => {
     console.log(value);
   };
@@ -82,10 +86,10 @@ export default function Edit() {
       if (newFiles) {
         const updatedList = [...fileList, ...newFiles];
         setFileList(updatedList);
-        field.onChange(updatedList);
+        newField.onChange(updatedList);
       }
     },
-    [field, fileList]
+    [newField, fileList]
   );
 
   //  remove multiple images
@@ -195,6 +199,7 @@ export default function Edit() {
         <Controller
           name="author"
           control={control}
+          // eslint-disable-next-line no-shadow
           render={({ field }) => (
             <TextField
               {...field}
@@ -248,7 +253,6 @@ export default function Edit() {
               </Typography>
             </Stack>
             <Controller
-              name={name}
               defaultValue=""
               control={control}
               render={({ field: { name, onBlur, ref } }) => (
@@ -321,6 +325,64 @@ export default function Edit() {
             </Stack>
           ) : null}
         </CustomBox>
+        <Editor
+          apiKey="n1426sgvqi9kegeyh05euhj7wbk5jc01essy3d1kbtxgv6pj"
+          // eslint-disable-next-line no-return-assign
+          onInit={(_evt, editor) => (editorRef.current = editor)}
+          initialValue="<p>This is the initial content of the editor.</p>"
+          init={{
+            height: 500,
+            images_upload_handler: (blobInfo, _progress) =>
+              new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append(`files`, blobInfo.blob(), blobInfo.filename());
+                //   await fetch(`${HOST_URL}api/upload`, {
+                //     method: 'post',
+                //     body: { files: [arrayBuffer]},
+                //     headers: { Authentication: `Bearer ${JwtService.getAccessToken}` },
+                //   });
+                axios({
+                  method: 'post',
+                  url: `${HOST_URL}/api/upload`,
+                  data: formData,
+                })
+                  .then((response) => {
+                    resolve(`${HOST_URL}/${response.data[0].url}`);
+                    console.log(response);
+                  })
+                  .catch((error) => {
+                    reject(error);
+                  });
+              }),
+            menubar: 'insert',
+            plugins: [
+              'advlist',
+              'autolink',
+              'lists',
+              'link',
+              'image',
+              'charmap',
+              'preview',
+              'anchor',
+              'searchreplace',
+              'visualblocks',
+              'code',
+              'fullscreen',
+              'insertdatetime',
+              'media',
+              'table',
+              'code',
+              'help',
+              'wordcount',
+            ],
+            toolbar:
+              'image | undo redo | blocks | ' +
+              'bold italic forecolor | alignleft aligncenter ' +
+              'alignright alignjustify | bullist numlist outdent indent | ' +
+              'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+          }}
+        />
       </form>
     </Root>
   );

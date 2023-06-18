@@ -36,11 +36,11 @@ class FuseAuthorization extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { location, userRole, isFirstAccess, setFirstAccess } = props;
+    const { location, userRole, isFirstAccess, setFirstAccess: firstAccess } = props;
     const { pathname } = location;
 
     if (isFirstAccess) 
-      setFirstAccess(false);
+    firstAccess(false);
     const matchedRoutes = matchRoutes(state.routes, pathname);
 
     const matched = matchedRoutes ? matchedRoutes[0] : false;

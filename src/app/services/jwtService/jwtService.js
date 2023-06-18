@@ -1,6 +1,7 @@
 import FuseUtils from '@fuse/utils/FuseUtils';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import Request from 'app/api/request';
 /* eslint-disable camelcase */
 const api = `${process.env.REACT_APP_SERVER_API}/api`;
 class JwtService extends FuseUtils.EventEmitter {
@@ -16,7 +17,12 @@ class JwtService extends FuseUtils.EventEmitter {
       },
       (err) => {
         return new Promise((resolve, reject) => {
-          if (err.response.status && err.response.status === 401 && err.config && !err.config.__isRetryRequest) {
+          if (
+            err.response.status &&
+            err.response.status === 401 &&
+            err.config &&
+            !err.config.__isRetryRequest
+          ) {
             // if you ever get an unauthorized response, logout the user
             this.emit('onAutoLogout', 'Invalid access_token');
             this.setSession(null);
@@ -62,19 +68,19 @@ class JwtService extends FuseUtils.EventEmitter {
 
   signInWithEmailAndPassword = (identifier, password) => {
     return new Promise((resolve, reject) => {
-      axios
-        .post(`${process.env.REACT_APP_SERVER_API}api/auth/local`, {
-          identifier,
-          password,
-        })
-        .then((response) => {
-          if (response.data.user) {
-            this.setSession(response.data.jwt);
-            resolve(response.data.user);
-          } else {
-            reject(response.data.error);
-          }
-        });
+      Request.send({
+        method: 'POST',
+        path: `api/auth/local`,
+        data: { identifier, password },
+      }).then((response = {}) => {
+        // const { data: newData, meta } = response;
+        if (response.user) {
+          this.setSession(response.jwt);
+          resolve(response.user);
+        } else {
+          reject(response.error);
+        }
+      });
     });
   };
 

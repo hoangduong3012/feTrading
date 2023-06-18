@@ -1,20 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { IDEAL, HISTORYTRADING_URL } from 'app/constant'
-import HistoryTradingService from 'app/api/historyTradingService'
-export const fetchHistoryTradingList = createAsyncThunk(
-  HISTORYTRADING_URL, 
-  async () => {
-     const response = await HistoryTradingService.getList()
-     return response
-  });
+import { IDEAL, HISTORYTRADING_URL } from 'app/constant';
+import HistoryTradingService from 'app/api/historyTradingService';
+
+export const fetchHistoryTradingList = createAsyncThunk(HISTORYTRADING_URL, async () => {
+  const response = await HistoryTradingService.getList();
+  return response;
+});
 
 const historyTradingSlice = createSlice({
   name: 'historyTrading',
   initialState: {
-    goldLessionList:[],
+    goldLessionList: [],
     meta: {},
     loading: IDEAL,
-    error: {}
+    error: {},
   },
   reducers: {
     openDialog: (state, action) => {
@@ -31,7 +30,7 @@ const historyTradingSlice = createSlice({
         ...state,
         loading: 'pending',
       };
-    })
+    });
     builder.addCase(fetchHistoryTradingList.fulfilled, (state, action) => {
       return {
         ...state,
@@ -39,7 +38,7 @@ const historyTradingSlice = createSlice({
         meta: action.payload.meta,
         loading: 'success',
       };
-    })
+    });
     builder.addCase(fetchHistoryTradingList.rejected, (state, action) => {
       return {
         ...state,
@@ -47,8 +46,8 @@ const historyTradingSlice = createSlice({
         meta: action.payload.meta,
         loading: 'error',
       };
-    })
-  }
+    });
+  },
 });
 
 export default historyTradingSlice.reducer;

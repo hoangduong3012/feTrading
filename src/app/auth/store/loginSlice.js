@@ -80,7 +80,7 @@ const loginSlice = createSlice({
     },
     loginError: (state, action) => {
       state.success = false;
-      state.errors = action.payload;
+      state.errors = [action.payload];
     },
     setFirstAccess: (state, action) => {
       return { ...state, isFirstAccess: action.payload};

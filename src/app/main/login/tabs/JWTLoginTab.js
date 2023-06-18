@@ -48,10 +48,13 @@ function JWTLoginTab(props) {
 
   useEffect(() => {
     login.errors.forEach((error) => {
-      setError(error.type, {
-        type: 'manual',
-        message: error.message,
-      });
+      if (error) {
+        setError(error.name, {
+          type: 'manual',
+          message: error.message,
+        });
+      }
+
     });
   }, [login.errors, setError]);
 
