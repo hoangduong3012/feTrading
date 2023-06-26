@@ -1,15 +1,20 @@
-import DemoContent from '@fuse/core/DemoContent';
 import { styled } from '@mui/material/styles';
-import FusePageSimple from '@fuse/core/FusePageSimple';
 import { useTranslation } from 'react-i18next';
+import FusePageSimple from '@fuse/core/FusePageSimple';
+import DemoContent from '@fuse/core/DemoContent';
 
-const Root = styled(FusePageSimple)({
-  '& .FusePageSimple-header': {},
+const Root = styled(FusePageSimple)(({ theme }) => ({
+  '& .FusePageSimple-header': {
+    backgroundColor: theme.palette.background.paper,
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    borderColor: theme.palette.divider,
+  },
   '& .FusePageSimple-toolbar': {},
   '& .FusePageSimple-content': {},
   '& .FusePageSimple-sidebarHeader': {},
   '& .FusePageSimple-sidebarContent': {},
-});
+}));
 
 function ExamplePage(props) {
   const { t } = useTranslation('examplePage');
@@ -21,11 +26,6 @@ function ExamplePage(props) {
           <h4>{t('TITLE')}</h4>
         </div>
       }
-      contentToolbar={
-        <div className="px-24">
-          <h4>Content Toolbar</h4>
-        </div>
-      }
       content={
         <div className="p-24">
           <h4>Content</h4>
@@ -33,6 +33,7 @@ function ExamplePage(props) {
           <DemoContent />
         </div>
       }
+      scroll="content"
     />
   );
 }

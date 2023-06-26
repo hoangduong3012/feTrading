@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
 import { styled } from '@mui/system';
-import TablePaginationUnstyled from '@mui/base/TablePaginationUnstyled';
+import TablePagination from '@mui/material/TablePagination';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
 import history from '@history';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -44,111 +50,140 @@ const Root = styled('div')`
     background-color: #ddd;
   }
 `;
-const CustomTablePagination = styled(TablePaginationUnstyled)`
-  & .MuiTablePaginationUnstyled-toolbar {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-`;
-
+const columns = [
+  { id: 'title', label: 'TITLE', minWidth: 170 },
+  { id: 'description', label: 'DESCRIPTION', minWidth: 100 },
+  {
+    id: 'personal ideal',
+    label: 'PERSONAL IDEAL',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toLocaleString('en-US'),
+  },
+  {
+    id: 'type',
+    label: 'TYPE',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toLocaleString('en-US'),
+  },
+  {
+    id: 'author',
+    label: 'AUTHOR',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: 'time lession',
+    label: 'TIME LESSION',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: 'images',
+    label: 'IMAGES',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toFixed(2),
+  },
+];
 export default function UnstyledTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const goldLessionList = useSelector(({ historyTrading }) => historyTrading.goldLessionList);
+  //  const [page, setPage] = React.useState(0);
+  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  // eslint-disable-next-line no-shadow
+  const historyTrading = useSelector(({ historyTrading }) => historyTrading);
+  const { goldLessionList, pagination, optionPaging } = historyTrading;
+  const total = pagination?.total ? pagination.total : 0;
+  const page = pagination?.page ? pagination.page - 1 : 0;
+  const pageSize = pagination?.pageSize ? pagination.pageSize : 10;
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchHistoryTradingList());
+    dispatch(fetchHistoryTradingList(optionPaging));
   }, []);
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * pageSize - rows.length) : 0;
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    dispatch(
+      fetchHistoryTradingList({
+        ...optionPaging,
+        pagination: { page: newPage, pageSize },
+      })
+    );
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    dispatch(
+      fetchHistoryTradingList({
+        ...optionPaging,
+        pagination: { page: 0, pageSize: event.target.value },
+      })
+    );
   };
   const handleClick = (id) => {
     history.push({
       pathname: `/historyTradingDetail/${id}`,
     });
   };
-  return goldLessionList.length > 0 ? (
+  return goldLessionList && goldLessionList.length > 0 ? (
     <Root>
-      <table style={{ minWidth: 500 }} aria-label="custom pagination table">
-        <thead>
-          <tr>
-            <th>TITLE</th>
-            <th>DESCRIPTION</th>
-            <th>PERSONAL IDEAL</th>
-            <th>TYPE</th>
-            <th>AUTHOR</th>
-            <th>TIME LESSION</th>
-            <th>IMAGES</th>
-          </tr>
-        </thead>
-        <tbody>
-          {(goldLessionList.length > 0
-            ? goldLessionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : goldLessionList
-          ).map((row) => (
-            <tr key={row.id} onClick={() => handleClick(row.id)}>
-              <td>{row.attributes.title}</td>
-              <td style={{ width: 160 }} align="right">
-                {row.attributes.description}
-              </td>
-              <td style={{ width: 160 }} align="right">
-                {row.attributes.personal_ideal}
-              </td>
-              <td style={{ width: 160 }} align="right">
-                {row.attributes.type}
-              </td>
-              <td style={{ width: 160 }} align="right">
-                {row.attributes.author}
-              </td>
-              <td style={{ width: 160 }} align="right">
-                {moment(row.attributes.time_lession).format('DD-MM-YYYY HH:MM:ss')}
-              </td>
-              <td style={{ width: 160 }} align="right">
-                {row.attributes.images ? row.attributes.images : ''}
-              </td>
-            </tr>
-          ))}
-
-          {emptyRows > 0 && (
-            <tr style={{ height: 41 * emptyRows }}>
-              <td colSpan={3} />
-            </tr>
-          )}
-        </tbody>
-        <tfoot>
-          <tr>
-            <CustomTablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={3}
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              componentsProps={{
-                select: {
-                  'aria-label': 'rows per page',
-                },
-                actions: {
-                  showFirstButton: true,
-                  showLastButton: true,
-                },
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </tr>
-        </tfoot>
-      </table>
+      <TableContainer>
+        <Table aria-label="custom pagination table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                  component="th"
+                  scope="row"
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {(goldLessionList.length > 0
+              ? goldLessionList.slice(page * pageSize, page * pageSize + pageSize)
+              : goldLessionList
+            ).map((row) => (
+              <TableRow key={row.id} onClick={() => handleClick(row.id)}>
+                <TableCell>{row.attributes.title}</TableCell>
+                <TableCell>{row.attributes.description}</TableCell>
+                <TableCell>{row.attributes.personal_ideal}</TableCell>
+                <TableCell>{row.attributes.type}</TableCell>
+                <TableCell>{row.attributes.author}</TableCell>
+                <TableCell>
+                  {moment(row.attributes.time_lession).format('DD-MM-YYYY HH:MM:ss')}
+                </TableCell>
+                <TableCell>{row.attributes.images ? row.attributes.images : ''}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+        component="div"
+        count={total}
+        rowsPerPage={pageSize}
+        page={page}
+        componentsProps={{
+          select: {
+            'aria-label': 'rows per page',
+          },
+          actions: {
+            showFirstButton: true,
+            showLastButton: true,
+          },
+        }}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </Root>
-  ) : (
-    <></>
-  );
+  ) : null;
 }

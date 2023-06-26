@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/no-import-module-exports
 import { configureStore } from '@reduxjs/toolkit';
+// eslint-disable-next-line import/no-import-module-exports
 import createReducer from './rootReducer';
 
 if (process.env.NODE_ENV === 'development' && module.hot) {

@@ -1,5 +1,5 @@
-import { createSelector, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import navigationConfig from 'app/fuse-configs/navigationConfig';
+import { createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit';
+import navigationConfig from 'app/configs/navigationConfig';
 import FuseUtils from '@fuse/utils';
 import i18next from 'i18next';
 import _ from '@lodash';
@@ -49,7 +49,7 @@ const navigationSlice = createSlice({
 
 export const { setNavigation, resetNavigation } = navigationSlice.actions;
 
-const getUserRole = (state) => state.auth.user.role;
+const getUserRole = (state) => state.user.role;
 
 export const selectNavigation = createSelector(
   [selectNavigationAll, ({ i18n }) => i18n.language, getUserRole],
@@ -73,13 +73,21 @@ export const selectNavigation = createSelector(
     return setTranslationValues(
       _.merge(
         [],
-        FuseUtils.filterRecursive(navigation, (item) =>
-          FuseUtils.hasPermission(item.auth, userRole)
-        )
+        filterRecursively(navigation, (item) => FuseUtils.hasPermission(item.auth, userRole))
       )
     );
   }
 );
+
+function filterRecursively(arr, predicate) {
+  return arr.filter(predicate).map((item) => {
+    item = { ...item };
+    if (item.children) {
+      item.children = filterRecursively(item.children, predicate);
+    }
+    return item;
+  });
+}
 
 export const selectFlatNavigation = createSelector([selectNavigation], (navigation) =>
   FuseUtils.getFlatNavigation(navigation)

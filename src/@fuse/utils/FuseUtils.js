@@ -287,7 +287,7 @@ class FuseUtils {
     return nav.map((_item) => {
       if (_item.id === parentId && _item.children) {
         return {
-          _item,
+          ..._item,
           children: [item, ..._item.children],
         };
       }
@@ -340,7 +340,7 @@ class FuseUtils {
        * allow only user role is guest (null or empty[])
        */
       // console.info("auth is empty[]:", authArr);
-      return  !userRole || userRole.length === 0;
+      return !userRole || userRole.length === 0;
     }
     /**
      * Check if user has grants

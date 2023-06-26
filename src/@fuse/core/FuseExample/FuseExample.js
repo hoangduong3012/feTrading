@@ -1,34 +1,48 @@
 import FuseHighlight from '@fuse/core/FuseHighlight';
-import AppBar from '@mui/material/AppBar';
 import Card from '@mui/material/Card';
-import Icon from '@mui/material/Icon';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { darken } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import DemoFrame from './DemoFrame';
+import FuseSvgIcon from '../FuseSvgIcon';
 
 const propTypes = {
+  name: PropTypes.string,
   raw: PropTypes.object,
   currentTabIndex: PropTypes.number,
 };
 
 const defaultProps = {
+  name: '',
   currentTabIndex: 0,
 };
 
 function FuseExample(props) {
   const [currentTab, setCurrentTab] = useState(props.currentTabIndex);
-  const { component: Component, raw, iframe, className } = props;
+  const { component: Component, raw, iframe, className, name } = props;
 
   function handleChange(event, value) {
     setCurrentTab(value);
   }
 
   return (
-    <Card className={clsx(className, 'shadow')}>
-      <AppBar position="static" color="default" className="shadow-0">
+    <Card
+      className={clsx(className, 'shadow')}
+      sx={{
+        backgroundColor: (theme) =>
+          darken(theme.palette.background.paper, theme.palette.mode === 'light' ? 0.01 : 0.1),
+      }}
+    >
+      <Box
+        sx={{
+          backgroundColor: (theme) =>
+            darken(theme.palette.background.paper, theme.palette.mode === 'light' ? 0.02 : 0.2),
+        }}
+      >
         <Tabs
           classes={{
             root: 'border-b-1',
@@ -36,16 +50,28 @@ function FuseExample(props) {
           }}
           value={currentTab}
           onChange={handleChange}
+          textColor="secondary"
+          indicatorColor="secondary"
         >
-          {Component && <Tab classes={{ root: 'min-w-64' }} icon={<Icon>remove_red_eye</Icon>} />}
-          {raw && <Tab classes={{ root: 'min-w-64' }} icon={<Icon>code</Icon>} />}
+          {Component && (
+            <Tab
+              classes={{ root: 'min-w-64' }}
+              icon={<FuseSvgIcon>heroicons-outline:eye</FuseSvgIcon>}
+            />
+          )}
+          {raw && (
+            <Tab
+              classes={{ root: 'min-w-64' }}
+              icon={<FuseSvgIcon>heroicons-outline:code</FuseSvgIcon>}
+            />
+          )}
         </Tabs>
-      </AppBar>
+      </Box>
       <div className="flex justify-center max-w-full relative">
         <div className={currentTab === 0 ? 'flex flex-1 max-w-full' : 'hidden'}>
           {Component &&
             (iframe ? (
-              <DemoFrame>
+              <DemoFrame name={name}>
                 <Component />
               </DemoFrame>
             ) : (
@@ -55,17 +81,19 @@ function FuseExample(props) {
             ))}
         </div>
         <div className={currentTab === 1 ? 'flex flex-1' : 'hidden'}>
-          {raw && (
-            <div className="flex flex-1">
-              <FuseHighlight
-                component="pre"
-                className="language-javascript w-full"
-                sx={{ borderRadius: '0!important' }}
-              >
-                {raw.default}
-              </FuseHighlight>
-            </div>
-          )}
+          {useMemo(() => {
+            return raw && currentTab === 1 ? (
+              <div className="flex flex-1">
+                <FuseHighlight
+                  component="pre"
+                  className="language-javascript w-full"
+                  sx={{ borderRadius: '0!important' }}
+                >
+                  {raw.default}
+                </FuseHighlight>
+              </div>
+            ) : null;
+          }, [raw, currentTab])}
         </div>
       </div>
     </Card>

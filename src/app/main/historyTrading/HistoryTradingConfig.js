@@ -15,7 +15,7 @@ const HistoryTradingConfig = {
       config: {},
     },
   },
-  auth: ["admin"],
+  auth: ["admin", 'Authenticated'],
   routes: [
     {
       path: 'historyTrading',

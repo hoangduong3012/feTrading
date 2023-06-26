@@ -1,22 +1,23 @@
 import FuseUtils from '@fuse/utils';
 import AppContext from 'app/AppContext';
 import { Component } from 'react';
-import { connect } from 'react-redux';
 import { matchRoutes } from 'react-router-dom';
 import withRouter from '@fuse/core/withRouter';
-import settingsConfig from 'app/fuse-configs/settingsConfig';
-import { setFirstAccess } from 'app/auth/store/loginSlice';
 import history from '@history';
+import {
+  getSessionRedirectUrl,
+  setSessionRedirectUrl,
+  resetSessionRedirectUrl,
+} from '@fuse/core/FuseAuthorization/sessionRedirectUrl';
 
 class FuseAuthorization extends Component {
   constructor(props, context) {
     super(props);
-    const { routes, isFirstAccess } = context;
+    const { routes } = context;
     this.state = {
       accessGranted: true,
       routes,
     };
-    this.defaultLoginRedirectUrl = settingsConfig.loginRedirectUrl || '/';
   }
 
   componentDidMount() {
@@ -36,69 +37,54 @@ class FuseAuthorization extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { location, userRole, isFirstAccess, setFirstAccess: firstAccess } = props;
+    const { location, userRole } = props;
     const { pathname } = location;
 
-    if (isFirstAccess) 
-    firstAccess(false);
     const matchedRoutes = matchRoutes(state.routes, pathname);
 
     const matched = matchedRoutes ? matchedRoutes[0] : false;
 
+    const userHasPermission = FuseUtils.hasPermission(matched.route.auth, userRole);
+
+    const ignoredPaths = ['/', '/callback', '/sign-in', '/sign-out', '/logout', '/404'];
+
+    if (matched && !userHasPermission && !ignoredPaths.includes(pathname)) {
+      setSessionRedirectUrl(pathname);
+    }
+
     return {
-      accessGranted: matched ? FuseUtils.hasPermission(matched.route.auth, userRole) : true,
+      accessGranted: matched ? userHasPermission : true,
     };
   }
 
   redirectRoute() {
-    const { location, userRole, navigate } = this.props;
-    const { pathname } = location;
-    const loginRedirectUrl = settingsConfig.loginRedirectUrl
-      ? settingsConfig.loginRedirectUrl
-      : this.defaultLoginRedirectUrl;
+    const { userRole } = this.props;
+    const redirectUrl = getSessionRedirectUrl() || this.props.loginRedirectUrl;
 
     /*
         User is guest
         Redirect to Login Page
         */
-    if (!userRole) {
-      navigate({
-        pathname: '/login',
-      });
-      settingsConfig.loginRedirectUrl = pathname;
+    if (!userRole || userRole.length === 0) {
+      setTimeout(() => history.push('/sign-in'), 0);
     } else {
       /*
         User is member
         User must be on unAuthorized page or just logged in
         Redirect to dashboard or loginRedirectUrl
         */
+      setTimeout(() => history.push(redirectUrl), 0);
 
-        navigate({
-          pathname: loginRedirectUrl,
-        });
-      settingsConfig.loginRedirectUrl = this.defaultLoginRedirectUrl;
+      resetSessionRedirectUrl();
     }
   }
 
   render() {
     // console.info('Fuse Authorization rendered', this.state.accessGranted);
-    return this.state.accessGranted || this.props.isFirstAccess ? <>{this.props.children}</> : null;
+    return this.state.accessGranted ? this.props.children : null;
   }
 }
 
-function mapStateToProps({ auth }) {
-  return {
-    userRole: auth.user.role,
-    isFirstAccess: auth.login.isFirstAccess
-  };
-}
-
-const mapDispatchToProps = dispatch => ({
-  setFirstAccess: source => {
-  dispatch(setFirstAccess(source));
-  },
-});
-
 FuseAuthorization.contextType = AppContext;
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FuseAuthorization));
+export default withRouter(FuseAuthorization);
