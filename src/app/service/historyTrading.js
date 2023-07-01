@@ -97,23 +97,34 @@ export const HISTORYTRADING_DETAIL = gql`
 //   }
 // `;
 
-// export const UPDATE_TEAM = gql`
-//   mutation updateTeam($updateTeamInput: UpdateTeamInput!) {
-//     updateTeam(updateTeamInput: $updateTeamInput) {
-//       createdby
-//       datecreated
-//       deletedAt
-//       deletedBy
-//       deptId
-//       id
-//       lastupdatedate
-//       lastupdatedby
-//       leaderId
-//       size
-//       teamName
-//     }
-//   }
-// `;
+export const UPDATE = gql`
+  mutation updateGoldLession($id: ID! $data:GoldLessionInput! ) {
+    updateGoldLession(id: $id data: $data) {
+      data {
+        id
+        attributes {
+          title
+          description
+          personal_ideal
+          type
+          author
+          image_lession {
+            data {
+              id
+              attributes {
+                name
+                url
+                previewUrl
+              }
+            }
+          }
+          time_lession
+          createdAt
+        }
+      }
+    }
+  }
+`;
 
 // export const REMOVE_TEAMS = gql`
 //   mutation removeTeams($ids: [Int!]!) {
@@ -158,15 +169,17 @@ const api = {
   //       },
   //     });
   //   },
-  //   updateTeam(data) {
-  //     const client = new ApolloClientWrapper(true).init();
-  //     return client.mutate({
-  //       mutation: UPDATE_TEAM,
-  //       variables: {
-  //         updateTeamInput: data,
-  //       },
-  //     });
-  //   },
+    update(data) {
+      const client = new ApolloClientWrapper(true).init();
+      const {__typename, image_lession, createdAt, id, ...newData} = data;
+      return client.mutate({
+        mutation: UPDATE,
+        variables: {
+          id: id,
+          data: newData,
+        },
+      });
+    },
   //   removeTeams(condition) {
   //     const client = new ApolloClientWrapper(true).init();
   //     return client.mutate({
