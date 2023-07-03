@@ -16,6 +16,30 @@ const navigationConfig = [
     icon: 'heroicons-outline:star',
     url: 'historyTrading',
   },
+  {
+    id: 'order-component',
+    title: 'Order',
+    translate: 'ORDER',
+    type: 'item',
+    icon: 'heroicons-outline:star',
+    url: 'order',
+  },
+  {
+    id: 'example-component',
+    title: 'Example',
+    translate: 'EXAMPLE',
+    type: 'item',
+    icon: 'heroicons-outline:star',
+    url: 'example',
+  },
+  {
+    id: 'practice-component',
+    title: 'Practice',
+    translate: 'PRACTICE',
+    type: 'item',
+    icon: 'heroicons-outline:star',
+    url: 'practice',
+  },
 ];
 
 export default navigationConfig;

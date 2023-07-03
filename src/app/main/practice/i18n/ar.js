@@ -1,5 +1,5 @@
 const locale = {
-  TITLE: 'History Trading Page',
+  TITLE: 'مثال على الصفحة',
 };
 
 export default locale;

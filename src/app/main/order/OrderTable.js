@@ -11,27 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import history from '@history';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import { fetchHistoryTradingList } from './store/historyTradingSlice';
-
-function createData(name, calories, fat) {
-  return { name, calories, fat };
-}
-
-const rows = [
-  createData('Cupcake', 305, 3.7),
-  createData('Donut', 452, 25.0),
-  createData('Eclair', 262, 16.0),
-  createData('Frozen yoghurt', 159, 6.0),
-  createData('Gingerbread', 356, 16.0),
-  createData('Honeycomb', 408, 3.2),
-  createData('Ice cream sandwich', 237, 9.0),
-  createData('Jelly Bean', 375, 0.0),
-  createData('KitKat', 518, 26.0),
-  createData('Lollipop', 392, 0.2),
-  createData('Marshmallow', 318, 0),
-  createData('Nougat', 360, 19.0),
-  createData('Oreo', 437, 18.0),
-].sort((a, b) => (a.calories < b.calories ? -1 : 1));
+import { fetchOrderList } from './store/orderSlice';
 
 const Root = styled('div')`
   table {
@@ -91,24 +71,21 @@ const columns = [
   },
 ];
 export default function UnstyledTable() {
-  //  const [page, setPage] = React.useState(0);
-  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
   // eslint-disable-next-line no-shadow
-  const historyTrading = useSelector(({ historyTrading }) => historyTrading);
-  const { goldLessionList, pagination, optionPaging } = historyTrading;
+  const order = useSelector(({ order }) => order);
+  const { orderList, pagination, optionPaging } = order;
   const total = pagination?.total ? pagination.total : 0;
   const page = pagination?.page ? pagination.page - 1 : 0;
   const pageSize = pagination?.pageSize ? pagination.pageSize : 10;
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchHistoryTradingList(optionPaging));
+    dispatch(fetchOrderList(optionPaging));
   }, []);
   // Avoid a layout jump when reaching the last page with empty rows.
-  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * pageSize - rows.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     dispatch(
-      fetchHistoryTradingList({
+      fetchOrderList({
         ...optionPaging,
         pagination: { page: newPage, pageSize },
       })
@@ -117,7 +94,7 @@ export default function UnstyledTable() {
 
   const handleChangeRowsPerPage = (event) => {
     dispatch(
-      fetchHistoryTradingList({
+      fetchOrderList({
         ...optionPaging,
         pagination: { page: 0, pageSize: event.target.value },
       })
@@ -125,10 +102,10 @@ export default function UnstyledTable() {
   };
   const handleClick = (id) => {
     history.push({
-      pathname: `/historyTradingDetail/${id}`,
+      pathname: `/orderDetail/${id}`,
     });
   };
-  return goldLessionList && goldLessionList.length > 0 ? (
+  return orderList && orderList.length > 0 ? (
     <Root>
       <TableContainer>
         <Table aria-label="custom pagination table">
@@ -148,9 +125,9 @@ export default function UnstyledTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {(goldLessionList.length > 0
-              ? goldLessionList.slice(page * pageSize, page * pageSize + pageSize)
-              : goldLessionList
+            {(orderList.length > 0
+              ? orderList.slice(page * pageSize, page * pageSize + pageSize)
+              : orderList
             ).map((row) => (
               <TableRow key={row.id} onClick={() => handleClick(row.id)}>
                 <TableCell>{row.attributes.title}</TableCell>

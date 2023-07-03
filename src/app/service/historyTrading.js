@@ -36,6 +36,32 @@ export const HISTORYTRADING = gql`
           }
           time_lession
           createdAt
+          examples {
+            data {
+              id
+              attributes {
+                name
+                description
+                isDeleted
+                createdAt
+                updatedAt
+                publishedAt
+              }
+            }
+          }
+          practices {
+            data {
+              id
+              attributes {
+                name
+                description
+                isDeleted
+                createdAt
+                updatedAt
+                publishedAt
+              }
+            }
+          }
         }
       }
       meta {

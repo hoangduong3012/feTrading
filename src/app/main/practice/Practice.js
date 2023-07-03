@@ -6,8 +6,8 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import FusePageSimple from '@fuse/core/FusePageSimple';
 import { useTranslation } from 'react-i18next';
 import withReducer from 'app/store/withReducer';
-import reducer from './store/exampleSlice';
-import ExampleTable from './ExampleTable';
+import reducer from './store/practiceSlice';
+import PracticeTable from './PracticeTable';
 
 const Root = styled(FusePageSimple)({
   '& .FusePageSimple-header': {},
@@ -17,9 +17,9 @@ const Root = styled(FusePageSimple)({
   '& .FusePageSimple-sidebarContent': {},
 });
 
-function ExamplePage(props) {
+function PracticePage(props) {
   const { navigate } = props;
-  const { t } = useTranslation('example');
+  const { t } = useTranslation('practice');
   const handleClickAdd = () => {
     history.push({
       pathname: '/',
@@ -52,8 +52,8 @@ function ExamplePage(props) {
       }
       content={
         <div className="p-24">
-          <h4>Trading example Detail</h4>
-          <ExampleTable />
+          <h4>Trading practice Detail</h4>
+          <PracticeTable />
           <br />
           {/* <DemoContent /> */}
         </div>
@@ -62,4 +62,4 @@ function ExamplePage(props) {
   );
 }
 
-export default withReducer('example', reducer)(ExamplePage);
+export default withReducer('practice', reducer)(PracticePage);

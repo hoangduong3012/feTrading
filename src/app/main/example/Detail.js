@@ -19,12 +19,12 @@ const CardItem = styled(Card)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 export default function Detail(props) {
-  const { goldLession } = props;
-  return !_.isEmpty(goldLession) ? (
+  const { example } = props;
+  return !_.isEmpty(example) ? (
     <Grid container spacing={2}>
       <Grid item sm={12} md={6} rowSpacing={4}>
         <Typography gutterBottom variant="subtitle1" component="div">
-          <strong> {goldLession.attributes.title}</strong>
+          <strong> {example.attributes.title}</strong>
         </Typography>
       </Grid>
       <Grid item xs={12} sm={12} md={6}>
@@ -32,7 +32,7 @@ export default function Detail(props) {
           <strong>Type</strong>
         </Typography>
         <Stack direction={{ xs: "column", sm: "row", md: "row" }} spacing={1}>
-          <Chip icon={<FaceIcon />} label={goldLession.attributes.type} variant="outlined" />
+          <Chip icon={<FaceIcon />} label={example.attributes.type} variant="outlined" />
         </Stack>
       </Grid>
       <Grid item xs={12} sm={12} md={12}>
@@ -47,7 +47,7 @@ export default function Detail(props) {
                   variant="body1"
                   dangerouslySetInnerHTML={{
                     __html:
-                    goldLession.attributes.description,
+                    example.attributes.description,
                   }}
                 />
               </Grid>
@@ -66,7 +66,7 @@ export default function Detail(props) {
                 variant="body1"
                 dangerouslySetInnerHTML={{
                   __html:
-                  goldLession.attributes.personal_ideal,
+                  example.attributes.personal_ideal,
                 }}
               />
             </Grid>

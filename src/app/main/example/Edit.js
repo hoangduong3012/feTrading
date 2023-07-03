@@ -10,7 +10,7 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import { HOST_URL, TYPE_TRADING } from 'app/constant/index';
 import { Controller, useForm } from 'react-hook-form';
 import UploadService from 'app/service/upload';
-import { updateHistoryTradingDetail } from './store/historyTradingSlice';
+import { updateExampleDetail } from './store/exampleSlice';
 
 // 👇 Custom Styles for the Box Component
 
@@ -28,13 +28,13 @@ export default function Edit(props) {
   const [fileList, setFileList] = useState([]);
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
-    defaultValues: props.goldLession.attributes,
+    defaultValues: props.example.attributes,
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();
-  const loadingUpdate = useSelector(({ historyTrading }) => historyTrading.loadingUpdate);
+  const loadingUpdate = useSelector(({ example }) => example.loadingUpdate);
   function onSubmit(value) {
-    dispatch(updateHistoryTradingDetail({...value , id:  props.goldLession.id}));
+    dispatch(updateExampleDetail({...value , id:  props.example.id}));
   }
   const editorRef = useRef(null);
   const handleChangeSelect = (value) => {

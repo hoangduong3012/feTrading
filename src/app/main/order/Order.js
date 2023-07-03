@@ -6,8 +6,8 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import FusePageSimple from '@fuse/core/FusePageSimple';
 import { useTranslation } from 'react-i18next';
 import withReducer from 'app/store/withReducer';
-import reducer from './store/historyTradingSlice';
-import HistoryTable from './HistoryTable';
+import reducer from './store/orderSlice';
+import OrderTable from './OrderTable';
 
 const Root = styled(FusePageSimple)({
   '& .FusePageSimple-header': {},
@@ -17,9 +17,9 @@ const Root = styled(FusePageSimple)({
   '& .FusePageSimple-sidebarContent': {},
 });
 
-function HistoryTradingPage(props) {
+function OrderPage(props) {
   const { navigate } = props;
-  const { t } = useTranslation('historyTrading');
+  const { t } = useTranslation('order');
   const handleClickAdd = () => {
     history.push({
       pathname: '/',
@@ -52,8 +52,8 @@ function HistoryTradingPage(props) {
       }
       content={
         <div className="p-24">
-          <h4>Trading table Detail</h4>
-          <HistoryTable />
+          <h4>Trading order Detail</h4>
+          <OrderTable />
           <br />
           {/* <DemoContent /> */}
         </div>
@@ -62,4 +62,4 @@ function HistoryTradingPage(props) {
   );
 }
 
-export default withReducer('historyTrading', reducer)(HistoryTradingPage);
+export default withReducer('order', reducer)(OrderPage);

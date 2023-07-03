@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchHistoryTradingDetail } from './store/historyTradingSlice';
+import { fetchExampleDetail } from './store/exampleSlice';
 import Edit from './Edit';
 import Detail from './Detail';
 
@@ -20,15 +20,15 @@ const Root = styled(FusePageSimple)({
   '& .FusePageSimple-sidebarContent': {},
 });
 
-export default function HistoryTradingDetail(props) {
+export default function ExampleDetail(props) {
   const [isEdit, setIsEdit] = useState(false);
-  const { t } = useTranslation('historyTrading');
+  const { t } = useTranslation('example');
   const params = useParams();
-  const goldLession = useSelector(({ historyTrading }) => historyTrading.goldLession);
+  const example = useSelector(({ example }) => example.examples);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchHistoryTradingDetail(params.id));
+    dispatch(fetchExampleDetail(params.id));
   }, [dispatch, params.id]);
 
   return (
@@ -51,7 +51,7 @@ export default function HistoryTradingDetail(props) {
       // }
       content={
         <>
-            {isEdit ? <Edit goldLession={goldLession} /> : <Detail goldLession={goldLession} />}
+            {isEdit ? <Edit example={example} /> : <Detail example={example} />}
         </>
       }
     />
