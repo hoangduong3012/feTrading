@@ -40,6 +40,14 @@ const navigationConfig = [
     icon: 'heroicons-outline:star',
     url: 'practice',
   },
+  {
+    id: 'plan-component',
+    title: 'Planing',
+    translate: 'PLAN',
+    type: 'item',
+    icon: 'heroicons-outline:star',
+    url: 'plan',
+  },
 ];
 
 export default navigationConfig;

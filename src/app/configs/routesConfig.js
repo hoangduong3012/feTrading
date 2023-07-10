@@ -5,13 +5,14 @@ import settingsConfig from 'app/configs/settingsConfig';
 import HistoryTrading from '../main/historyTrading/HistoryTradingConfig';
 import OrderTrading from '../main/order/OrderConfig';
 import PracticeConfig from '../main/practice/PracticeConfig';
+import PlanConfig from '../main/plan/PlanConfig';
 import ExampleConfig from '../main/example/ExampleConfig';
 import SignInConfig from '../main/sign-in/SignInConfig';
 import SignUpConfig from '../main/sign-up/SignUpConfig';
 import SignOutConfig from '../main/sign-out/SignOutConfig';
 import Error404Page from '../main/404/Error404Page';
 
-const routeConfigs = [ExampleConfig, SignOutConfig, SignInConfig, SignUpConfig, HistoryTrading, OrderTrading, PracticeConfig];
+const routeConfigs = [ExampleConfig, SignOutConfig, SignInConfig, SignUpConfig, HistoryTrading, OrderTrading, PracticeConfig, PlanConfig];
 
 const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs, settingsConfig.defaultAuth),

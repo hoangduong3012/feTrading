@@ -27,3 +27,8 @@ export const UPD_EXAMPLEDETAIL_URL = 'example/updateDetail';
 export const PRACTICE_URL = 'practice/fetchList';
 export const PRACTICEDETAIL_URL = 'practice/fetchDetail';
 export const UPD_PRACTICEDETAIL_URL = 'practice/updateDetail';
+
+//Plan
+export const PLAN_URL = 'plan/fetchList';
+export const PLANDETAIL_URL = 'plan/fetchDetail';
+export const UPD_PLANDETAIL_URL = 'plan/updateDetail';
