@@ -82,7 +82,9 @@ export const PLAN_DETAIL = gql`
 export const CREATE = gql`
   mutation createPlan($data: PlanInput!) {
     createPlan(data: $data) {
-      ${common}
+      data {
+        ${common}
+      }
     }
   }
 `;
@@ -139,15 +141,15 @@ const api = {
   //       },
   //     });
   //   },
-  //   createTeam(data) {
-  //     const client = new ApolloClientWrapper(true).init();
-  //     return client.mutate({
-  //       mutation: CREATE_TEAM,
-  //       variables: {
-  //         createTeamInput: data,
-  //       },
-  //     });
-  //   },
+    add(data) {
+      const client = new ApolloClientWrapper(true).init();
+      return client.mutate({
+        mutation: CREATE,
+        variables: {
+          data: data,
+        },
+      });
+    },
     update(data) {
       const client = new ApolloClientWrapper(true).init();
       const {__typename, image_lession, createdAt, id, ...newData} = data;

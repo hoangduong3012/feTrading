@@ -1,17 +1,21 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { IDEAL, PRACTICE_URL, PRACTICEDETAIL_URL, UPD_PRACTICEDETAIL_URL } from 'app/constant';
+import { IDEAL, PLAN_URL, PLANDETAIL_URL, UPD_PLANDETAIL_URL, ADD_PLANDETAIL_URL } from 'app/constant';
 import PlanService from 'app/service/plan';
 
-export const fetchPlanList = createAsyncThunk(PRACTICE_URL, async (option) => {
+export const fetchPlanList = createAsyncThunk(PLAN_URL, async (option) => {
   const response = await PlanService.getPlans(option);
   return response;
 });
-export const fetchPlanDetail = createAsyncThunk(PRACTICEDETAIL_URL, async (id) => {
+export const fetchPlanDetail = createAsyncThunk(PLANDETAIL_URL, async (id) => {
   const response = await PlanService.getPlan(id);
   return response;
 });
-export const updatePlanDetail = createAsyncThunk(UPD_PRACTICEDETAIL_URL, async (data) => {
+export const updatePlanDetail = createAsyncThunk(UPD_PLANDETAIL_URL, async (data) => {
   const response = await PlanService.update(data);
+  return response;
+});
+export const addPlan= createAsyncThunk(ADD_PLANDETAIL_URL, async (data) => {
+  const response = await PlanService.add(data);
   return response;
 });
 const initialState = {
@@ -99,6 +103,25 @@ const planSlice = createSlice({
       };
     });
     builder.addCase(updatePlanDetail.rejected, (state, action) => {
+      return {
+        ...state,
+        loadingUpdate: 'error',
+      };
+    });
+    builder.addCase(addPlan.pending, (state, action) => {
+      return {
+        ...state,
+        loadingUpdate: 'pending',
+      };
+    });
+    builder.addCase(addPlan.fulfilled, (state, action) => {
+      return {
+        ...state,
+        plan: action.payload.data.addPlan.data,
+        loadingUpdate: 'success',
+      };
+    });
+    builder.addCase(addPlan.rejected, (state, action) => {
       return {
         ...state,
         loadingUpdate: 'error',

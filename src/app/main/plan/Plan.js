@@ -1,6 +1,5 @@
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import clsx from 'clsx';
 import history from '@history';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import FusePageSimple from '@fuse/core/FusePageSimple';
@@ -22,40 +21,27 @@ function PlanPage(props) {
   const { t } = useTranslation('plan');
   const handleClickAdd = () => {
     history.push({
-      pathname: '/',
+      pathname: '/planNew',
     });
   }
   return (
     <Root
       header={
-        <div className="p-24">
-          <h4>{t('TITLE')}</h4>
-        </div>
-      }
-      contentToolbar={
-        <div className="px-24">
-          <h4>Search Toolbar</h4>
-          <div>
-            {' '}
-            <Button
-              className={clsx('', 'abc')}
-              variant="contained"
-              size="large"
-              color="primary"
-              endIcon={<AddBoxIcon />}
-              onClick={handleClickAdd}
-            >
-              <span>Add new</span>
-            </Button>
+        <>
+          <div className="p-24">
+            <h4>{t('TITLE')}</h4>
           </div>
-        </div>
+          <Button color="secondary" size="large" onClick={handleClickAdd}
+          >
+            Add new
+          </Button>
+        </>
       }
       content={
         <div className="p-24">
           <h4>Trading plan Detail</h4>
           <PlanTable />
           <br />
-          {/* <DemoContent /> */}
         </div>
       }
     />

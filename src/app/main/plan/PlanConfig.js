@@ -25,6 +25,10 @@ const PlanConfig = {
       path: 'planDetail/:id',
       element: <PlanDetail />,
     },
+    {
+      path: 'planNew',
+      element: <PlanDetail />,
+    },
   ],
 };
 

@@ -6,6 +6,13 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import TableContainer from '@mui/material/TableContainer';
+import Timeline from '@mui/lab/Timeline';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import TimelineConnector from '@mui/lab/TimelineConnector';
+import TimelineContent from '@mui/lab/TimelineContent';
+import TimelineDot from '@mui/lab/TimelineDot';
+import LaptopMacIcon from '@mui/icons-material/LaptopMac';
 import Typography from '@mui/material/Typography';
 import TableHead from '@mui/material/TableHead';
 import history from '@history';
@@ -35,39 +42,25 @@ const columns = [
   { id: 'title', label: 'TITLE', minWidth: 170 },
   { id: 'description', label: 'DESCRIPTION', minWidth: 100 },
   {
-    id: 'personal ideal',
-    label: 'PERSONAL IDEAL',
+    id: 'planDate',
+    label: 'Plan Date',
     minWidth: 170,
     align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
+    format: (value) => moment(value).format('YYYY/MM/DD'),
   },
   {
-    id: 'type',
-    label: 'TYPE',
+    id: 'symbol',
+    label: 'Symbol',
     minWidth: 170,
     align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
+    format: (value) => value.data.attributes.symbolNm,
   },
   {
-    id: 'author',
-    label: 'AUTHOR',
+    id: 'comments',
+    label: 'COMMENT',
     minWidth: 170,
     align: 'right',
-    format: (value) => value.toFixed(2),
-  },
-  {
-    id: 'time lession',
-    label: 'TIME LESSION',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
-  {
-    id: 'images',
-    label: 'IMAGES',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
+    format: (value) => value.map(v => v.data.attributes.comment),
   },
 ];
 export default function UnstyledTable() {
@@ -138,13 +131,34 @@ export default function UnstyledTable() {
                     row.attributes.description,
                   }}
                 /></TableCell>
-                <TableCell>{row.attributes.personal_ideal}</TableCell>
+                {/* <TableCell>{row.attributes.personal_ideal}</TableCell>
                 <TableCell>{row.attributes.type}</TableCell>
-                <TableCell>{row.attributes.author}</TableCell>
+                <TableCell>{row.attributes.author}</TableCell> */}
                 <TableCell>
-                  {moment(row.attributes.time_lession).format('DD-MM-YYYY HH:MM:ss')}
+                  {moment(row.attributes.planDate).format('DD-MM-YYYY HH:MM:ss')}
                 </TableCell>
-                <TableCell>{row.attributes.images ? row.attributes.images : ''}</TableCell>
+                <TableCell>{row.data.attributes.symbolNm}</TableCell>
+                <TableCell><Timeline position="left">
+      {row.attributes.comments.map(c => {
+         <TimelineItem>
+           <TimelineOppositeContent
+          sx={{ m: 'auto 0' }}
+          align="right"
+          variant="body2"
+          color="text.secondary"
+        >
+          {moment(c.attributes.commentDate).format('YYYY/MM/DD')}
+        </TimelineOppositeContent>
+         <TimelineSeparator>
+         <TimelineDot>
+            <LaptopMacIcon />
+          </TimelineDot>
+           <TimelineConnector />
+         </TimelineSeparator>
+         <TimelineContent>{c.attributes.comment}</TimelineContent>
+       </TimelineItem>
+      })}
+      </Timeline></TableCell>
               </TableRow>
             ))}
           </TableBody>

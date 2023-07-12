@@ -6,11 +6,16 @@ import { Editor } from '@tinymce/tinymce-react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import moment from 'moment';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { HOST_URL, TYPE_TRADING } from 'app/constant/index';
 import { Controller, useForm } from 'react-hook-form';
 import UploadService from 'app/service/upload';
-import { updatePlanDetail } from './store/planSlice';
+import { updatePlanDetail, addPlan } from './store/planSlice';
+
 
 // 👇 Custom Styles for the Box Component
 
@@ -26,21 +31,23 @@ const schema = yup.object().shape({
 export default function Edit(props) {
   // const [singleFile, setSingleFile] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const { plan } = props.plan;
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
-    defaultValues: props.plan.attributes,
+    defaultValues: plan?.attributes || {description: 'abc'},
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();
   const loadingUpdate = useSelector(({ plan }) => plan.loadingUpdate);
   function onSubmit(value) {
-    dispatch(updatePlanDetail({...value , id:  props.plan.id}));
+    if (plan) {
+      dispatch(updatePlanDetail({...value , id:  props.plan.id}));
+    } else {
+      dispatch(addPlan({...value}));
+    }
+
   }
   const editorRef = useRef(null);
-  const handleChangeSelect = (value) => {
-    setValue('type', value.target.value, { shouldTouch: true });
-  };
-
   useEffect(() => {
     if (loadingUpdate == 'error') {
       dispatch(showMessage({ message: 'loi khi update' }));
@@ -81,33 +88,27 @@ export default function Edit(props) {
           )}
         />
         <Controller
-          name="personal_ideal"
+          name="planDate"
           control={control}
           render={({ field }) => (
-            <TextField
-              {...field}
-              className="mb-16"
-              type="text"
-              label="Ý tưởng"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Icon className="text-20" color="action">
-                      exp
-                    </Icon>
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                {...field}
+                className="mb-16"
+                type="text"
+                label="ngay len y tuong"
+                variant="outlined"
+                defaultValue={moment()}
+              />
+            </LocalizationProvider>
           )}
         />
+        {/* 
         <Controller
           name="type"
           control={control}
           render={({ field }) => (
             <>
-              {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
               <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelect}>
                 <MenuItem value="">
                   <em>None</em>
@@ -143,18 +144,20 @@ export default function Edit(props) {
               variant="outlined"
             />
           )}
-        />
+        /> 
+        */}
         <Controller
           name="description"
           control={control}
           // eslint-disable-next-line no-shadow
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange, value } }) =>
+            (
             <Editor
               apiKey="n1426sgvqi9kegeyh05euhj7wbk5jc01essy3d1kbtxgv6pj"
               // eslint-disable-next-line no-return-assign
               onInit={(_evt, editor) => (editorRef.current = editor)}
               onEditorChange={onChange}
-              initialValue={value}
+              value={value}
               init={{
                 height: 500,
                 images_upload_handler: (blobInfo, _progress) =>

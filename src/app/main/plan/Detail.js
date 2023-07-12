@@ -6,9 +6,15 @@ import {
   Chip,
   Stack,
 } from "@mui/material";
-import FaceIcon from "@mui/icons-material/Face";
-import { styled } from "@mui/material/styles";
 import _ from "@lodash";
+import Timeline from '@mui/lab/Timeline';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import TimelineConnector from '@mui/lab/TimelineConnector';
+import TimelineContent from '@mui/lab/TimelineContent';
+import TimelineDot from '@mui/lab/TimelineDot';
+import LaptopMacIcon from '@mui/icons-material/LaptopMac';
+
 
 export default function Detail(props) {
   const { plan } = props;
@@ -21,11 +27,9 @@ export default function Detail(props) {
       </Grid>
       <Grid item xs={12} sm={12} md={6}>
         <Typography gutterBottom variant="subtitle1" component="div">
-          <strong>Type</strong>
+          <strong>Plan Date</strong>
         </Typography>
-        <Stack direction={{ xs: "column", sm: "row", md: "row" }} spacing={1}>
-          <Chip icon={<FaceIcon />} label={plan.attributes.type} variant="outlined" />
-        </Stack>
+        {moment(plan.attributes.planDate).format('YYYY/MM/DD')}
       </Grid>
       <Grid item xs={12} sm={12} md={12}>
         <Card>
@@ -48,22 +52,27 @@ export default function Detail(props) {
         </Card>
       </Grid>
       <Grid item xs={12} sm={12} md={12}>
-        <Card>
-          <CardContent>
-            <Grid item xs={6}>
-              <Typography gutterBottom variant="subtitle1" component="div">
-                <strong>Personal Ideal</strong>
-              </Typography>
-              <Typography
-                variant="body1"
-                dangerouslySetInnerHTML={{
-                  __html:
-                  plan.attributes.personal_ideal,
-                }}
-              />
-            </Grid>
-          </CardContent>
-        </Card>
+      <Timeline position="left">
+      {plan.attributes.comments.map(c => {
+         <TimelineItem>
+           <TimelineOppositeContent
+          sx={{ m: 'auto 0' }}
+          align="right"
+          variant="body2"
+          color="text.secondary"
+        >
+          {moment(c.attributes.commentDate).format('YYYY/MM/DD')}
+        </TimelineOppositeContent>
+         <TimelineSeparator>
+         <TimelineDot>
+            <LaptopMacIcon />
+          </TimelineDot>
+           <TimelineConnector />
+         </TimelineSeparator>
+         <TimelineContent>{c.attributes.comment}</TimelineContent>
+       </TimelineItem>
+      })}
+      </Timeline>
       </Grid>
     </Grid>
   ) : null;

@@ -32,3 +32,4 @@ export const UPD_PRACTICEDETAIL_URL = 'practice/updateDetail';
 export const PLAN_URL = 'plan/fetchList';
 export const PLANDETAIL_URL = 'plan/fetchDetail';
 export const UPD_PLANDETAIL_URL = 'plan/updateDetail';
+export const ADD_PLANDETAIL_URL = 'plan/addDetail';

@@ -27,22 +27,34 @@ export default function PlanDetail(props) {
   const plan = useSelector(({ plan }) => plan.plans);
   const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   if (params.id) {
+
+  //   }
+  //   dispatch(fetchPlanDetail(params.id));
+  // }, [dispatch, params.id]);
+
   useEffect(() => {
-    dispatch(fetchPlanDetail(params.id));
-  }, [dispatch, params.id]);
+    if (params.id) {
+      dispatch(fetchPlanDetail(params.id));
+      setIsEdit(false);
+    } else {
+      setIsEdit(true);
+    }
+  }, []);
 
   return (
     <Root
       header={
         <div className="p-24">
           <h4>{t('TITLE')}</h4>
-          <Button color="secondary" size="large" onClick={(e) => {
+          { params.id && <Button color="secondary" size="large" onClick={(e) => {
           e.preventDefault();
             setIsEdit(!isEdit);
           }}
         >
-          {isEdit ? 'Edit' : 'Detail'}
-        </Button>
+          {!!isEdit ? 'Edit' : 'Detail'}
+        </Button>}
         </div>
         
       }
