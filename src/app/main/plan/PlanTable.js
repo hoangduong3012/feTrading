@@ -12,6 +12,7 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
+import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import LaptopMacIcon from '@mui/icons-material/LaptopMac';
 import Typography from '@mui/material/Typography';
 import TableHead from '@mui/material/TableHead';
@@ -65,8 +66,8 @@ const columns = [
 ];
 export default function UnstyledTable() {
   // eslint-disable-next-line no-shadow
-  const order = useSelector(({ order }) => order);
-  const { orderList, pagination, optionPaging } = order;
+  const plan = useSelector(({ plan }) => plan);
+  const { planList, pagination, optionPaging } = plan;
   const total = pagination?.total ? pagination.total : 0;
   const page = pagination?.page ? pagination.page - 1 : 0;
   const pageSize = pagination?.pageSize ? pagination.pageSize : 10;
@@ -95,10 +96,10 @@ export default function UnstyledTable() {
   };
   const handleClick = (id) => {
     history.push({
-      pathname: `/orderDetail/${id}`,
+      pathname: `/planDetail/${id}`,
     });
   };
-  return orderList && orderList.length > 0 ? (
+  return planList && planList.length > 0 ? (
     <Root>
       <TableContainer>
         <Table aria-label="custom pagination table">
@@ -118,9 +119,9 @@ export default function UnstyledTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {(orderList.length > 0
-              ? orderList.slice(page * pageSize, page * pageSize + pageSize)
-              : orderList
+            {(planList.length > 0
+              ? planList.slice(page * pageSize, page * pageSize + pageSize)
+              : planList
             ).map((row) => (
               <TableRow key={row.id} onClick={() => handleClick(row.id)}>
                 <TableCell>{row.attributes.title}</TableCell>
@@ -135,11 +136,11 @@ export default function UnstyledTable() {
                 <TableCell>{row.attributes.type}</TableCell>
                 <TableCell>{row.attributes.author}</TableCell> */}
                 <TableCell>
-                  {moment(row.attributes.planDate).format('DD-MM-YYYY HH:MM:ss')}
+                  {moment(row.attributes.planDate).format('DD-MM-YYYY HH:mm:ss')}
                 </TableCell>
-                <TableCell>{row.data.attributes.symbolNm}</TableCell>
+                <TableCell>{row.attributes.symbol.data?.attributes?.symbolNm}</TableCell>
                 <TableCell><Timeline position="left">
-      {row.attributes.comments.map(c => {
+      {row.attributes.comments.data && row.attributes.comments.data.map(c => (
          <TimelineItem>
            <TimelineOppositeContent
           sx={{ m: 'auto 0' }}
@@ -147,7 +148,8 @@ export default function UnstyledTable() {
           variant="body2"
           color="text.secondary"
         >
-          {moment(c.attributes.commentDate).format('YYYY/MM/DD')}
+          <div>{moment(c.attributes.commentDate).format('DD-MM-YYYY')}</div>
+          <div>{moment(c.attributes.commentDate).format('HH:mm:ss')}</div>
         </TimelineOppositeContent>
          <TimelineSeparator>
          <TimelineDot>
@@ -157,7 +159,7 @@ export default function UnstyledTable() {
          </TimelineSeparator>
          <TimelineContent>{c.attributes.comment}</TimelineContent>
        </TimelineItem>
-      })}
+      ))}
       </Timeline></TableCell>
               </TableRow>
             ))}
