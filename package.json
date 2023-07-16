@@ -117,7 +117,7 @@
     },
     "scripts": {
         "start": "react-app-rewired  start",
-        "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
+        "build": "DISABLE_ESLINT_PLUGIN='true' cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
         "test": "react-app-rewired test --env=node",
         "eject": "react-app-rewired eject",
         "build-docs": "babel-node --presets @babel/preset-env src/app/main/documentation/material-ui-components/build.js",
@@ -125,7 +125,7 @@
         "lint": "eslint"
     },
     "engines": {
-        "node": ">=18.0.0",
+        "node": ">=16.0.0",
         "npm": ">=8.0.0"
     },
     "browserslist": {
