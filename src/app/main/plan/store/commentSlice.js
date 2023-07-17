@@ -1,25 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { IDEAL, PLAN_URL, PLANDETAIL_URL, UPD_PLANDETAIL_URL, ADD_PLANDETAIL_URL, ADD_COMMENTDETAIL_URL } from 'app/constant';
-import PlanService from 'app/service/plan';
+import { IDEAL, COMMENT_URL, COMMENTDETAIL_URL, UPD_COMMENTDETAIL_URL, ADD_COMMENTDETAIL_URL } from 'app/constant';
+import CommentService from 'app/service/comment';
 
-export const fetchPlanList = createAsyncThunk(PLAN_URL, async (option) => {
-  const response = await PlanService.getPlans(option);
-  return response;
-});
-export const fetchPlanDetail = createAsyncThunk(PLANDETAIL_URL, async (id) => {
-  const response = await PlanService.getPlan(id);
-  return response;
-});
-export const updatePlanDetail = createAsyncThunk(UPD_PLANDETAIL_URL, async (data) => {
-  const response = await PlanService.update(data);
-  return response;
-});
-export const addPlan= createAsyncThunk(ADD_PLANDETAIL_URL, async (data) => {
-  const response = await PlanService.add(data);
-  return response;
-});
 export const addComment= createAsyncThunk(ADD_COMMENTDETAIL_URL, async (data) => {
-  const response = await PlanService.addComment(data);
+  const response = await CommentService.add(data);
   return response;
 });
 const initialState = {
@@ -32,15 +16,15 @@ const initialState = {
     sort: {},
     publicationState: true,
   },
-  planList: [],
-  plan: {},
+  commentList: [],
+  comment: {},
   pagination: {},
   loading: IDEAL,
   loadingUpdate:IDEAL,
   error: {},
 }
-const planSlice = createSlice({
-  name: 'plan',
+const commentSlice = createSlice({
+  name: 'comment',
   initialState,
   // reducers: {
   //   openDialog: (state, action) => {
@@ -52,61 +36,61 @@ const planSlice = createSlice({
   //   },
   // },
   extraReducers: (builder) => {
-    builder.addCase(fetchPlanList.pending, (state, action) => {
+    builder.addCase(fetchCommentList.pending, (state, action) => {
       return {
         ...state,
         loading: 'pending',
       };
     });
-    builder.addCase(fetchPlanList.fulfilled, (state, action) => {
+    builder.addCase(fetchCommentList.fulfilled, (state, action) => {
       return {
         ...state,
-        planList: action.payload.data.plans.data,
-        pagination: action.payload.data.plans.meta.pagination,
+        commentList: action.payload.data.comments.data,
+        pagination: action.payload.data.comments.meta.pagination,
         loading: 'success',
       };
     });
-    builder.addCase(fetchPlanList.rejected, (state, action) => {
+    builder.addCase(fetchCommentList.rejected, (state, action) => {
       return {
         ...state,
-        planList: initialState.planList,
+        commentList: initialState.commentList,
         pagination: initialState.pagination,
         loading: 'error',
       };
     });
-    builder.addCase(fetchPlanDetail.pending, (state, action) => {
+    builder.addCase(fetchCommentDetail.pending, (state, action) => {
       return {
         ...state,
         loading: 'pending',
       };
     });
-    builder.addCase(fetchPlanDetail.fulfilled, (state, action) => {
+    builder.addCase(fetchCommentDetail.fulfilled, (state, action) => {
       return {
         ...state,
-        plan: action.payload.data.plan.data,
+        comment: action.payload.data.comment.data,
         loading: 'success',
       };
     });
-    builder.addCase(fetchPlanDetail.rejected, (state, action) => {
+    builder.addCase(fetchCommentDetail.rejected, (state, action) => {
       return {
         ...state,
         loading: 'error',
       };
     });
-    builder.addCase(updatePlanDetail.pending, (state, action) => {
+    builder.addCase(updateCommentDetail.pending, (state, action) => {
       return {
         ...state,
         loadingUpdate: 'pending',
       };
     });
-    builder.addCase(updatePlanDetail.fulfilled, (state, action) => {
+    builder.addCase(updateCommentDetail.fulfilled, (state, action) => {
       return {
         ...state,
-        plan: action.payload.data.updatePlan.data,
+        comment: action.payload.data.updateComment.data,
         loadingUpdate: 'success',
       };
     });
-    builder.addCase(updatePlanDetail.rejected, (state, action) => {
+    builder.addCase(updateCommentDetail.rejected, (state, action) => {
       return {
         ...state,
         loadingUpdate: 'error',
@@ -121,7 +105,7 @@ const planSlice = createSlice({
     builder.addCase(addComment.fulfilled, (state, action) => {
       return {
         ...state,
-        plan: action.payload.data.createComment.data.attributes.plan.data,
+        comment: action.payload.data.createComment.data,
         loadingUpdate: 'success',
       };
     });
@@ -134,5 +118,4 @@ const planSlice = createSlice({
   },
 });
 
-export default planSlice.reducer;
-//
+export default commentSlice.reducer;

@@ -136,7 +136,7 @@ export default function UnstyledTable() {
                 <TableCell>{row.attributes.type}</TableCell>
                 <TableCell>{row.attributes.author}</TableCell> */}
                 <TableCell>
-                  {moment(row.attributes.planDate).format('DD-MM-YYYY HH:mm:ss')}
+                  {row.attributes.planDate && moment(row.attributes.planDate).format('DD-MM-YYYY HH:mm:ss')}
                 </TableCell>
                 <TableCell>{row.attributes.symbol.data?.attributes?.symbolNm}</TableCell>
                 <TableCell><Timeline position="left">

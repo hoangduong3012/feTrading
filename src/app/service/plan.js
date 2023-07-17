@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { gql } from '@apollo/client';
+import { commonComment } from './comment'
 import ApolloClientWrapper from '@util/apolloClient';
 import _ from 'lodash';
 
@@ -89,6 +90,25 @@ export const CREATE = gql`
   }
 `;
 
+export const CREATE_COMMENT = gql`
+mutation createComment($data: CommentInput!) {
+  createComment(data: $data) {
+    data {
+      id
+      attributes {
+        comment
+        commentDate
+        plan {
+          data {
+            ${common}
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
 export const DELETE = gql`
   mutation deletePlan($id: ID!) {
     deletePlan(id: $id) {
@@ -132,19 +152,19 @@ const api = {
       variables: { id },
     });
   },
-  //   getTeamItem(condition) {
-  //     const client = new ApolloClientWrapper(true).init();
-  //     return client.query({
-  //       query: TEAM_ITEM,
-  //       variables: {
-  //         id: condition,
-  //       },
-  //     });
-  //   },
     add(data) {
       const client = new ApolloClientWrapper(true).init();
       return client.mutate({
         mutation: CREATE,
+        variables: {
+          data: data,
+        },
+      });
+    },
+    addComment(data) {
+      const client = new ApolloClientWrapper(true).init();
+      return client.mutate({
+        mutation: CREATE_COMMENT,
         variables: {
           data: data,
         },
@@ -161,14 +181,5 @@ const api = {
         },
       });
     },
-  //   removeTeams(condition) {
-  //     const client = new ApolloClientWrapper(true).init();
-  //     return client.mutate({
-  //       mutation: REMOVE_TEAMS,
-  //       variables: {
-  //         ids: condition,
-  //       },
-  //     });
-  //   },
 };
 export default api;

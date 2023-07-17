@@ -24,15 +24,8 @@ export default function PlanDetail(props) {
   const [isEdit, setIsEdit] = useState(false);
   const { t } = useTranslation('plan');
   const params = useParams();
-  const plan = useSelector(({ plan }) => plan.plans);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (params.id) {
-
-  //   }
-  //   dispatch(fetchPlanDetail(params.id));
-  // }, [dispatch, params.id]);
 
   useEffect(() => {
     if (params.id) {
@@ -63,7 +56,7 @@ export default function PlanDetail(props) {
       // }
       content={
         <>
-            {isEdit ? <Edit plan={plan} /> : <Detail plan={plan} />}
+            {isEdit ? <Edit /> : <Detail />}
         </>
       }
     />

@@ -33,3 +33,9 @@ export const PLAN_URL = 'plan/fetchList';
 export const PLANDETAIL_URL = 'plan/fetchDetail';
 export const UPD_PLANDETAIL_URL = 'plan/updateDetail';
 export const ADD_PLANDETAIL_URL = 'plan/addDetail';
+
+//Comment
+export const COMMENT_URL = 'comment/fetchList';
+export const COMMENTDETAIL_URL = 'comment/fetchDetail';
+export const UPD_COMMENTDETAIL_URL = 'comment/updateDetail';
+export const ADD_COMMENTDETAIL_URL = 'comment/addDetail';

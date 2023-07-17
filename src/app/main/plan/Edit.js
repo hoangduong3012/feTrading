@@ -3,6 +3,7 @@ import { styled } from '@mui/system';
 import { TextField, Select, MenuItem, Icon, InputAdornment, Button } from '@mui/material';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Editor } from '@tinymce/tinymce-react';
+import _ from "@lodash";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,11 +12,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from 'moment';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { showMessage } from 'app/store/fuse/messageSlice';
-import { HOST_URL, TYPE_TRADING } from 'app/constant/index';
+import { HOST_URL } from 'app/constant/index';
 import { Controller, useForm } from 'react-hook-form';
 import UploadService from 'app/service/upload';
 import { updatePlanDetail, addPlan } from './store/planSlice';
-
+import history from '@history';
 
 // 👇 Custom Styles for the Box Component
 
@@ -28,24 +29,24 @@ const schema = yup.object().shape({
   title: yup.string().required('You must enter'),
 });
 
-export default function Edit(props) {
-  // const [singleFile, setSingleFile] = useState([]);
-  const [fileList, setFileList] = useState([]);
-  const { plan } = props.plan;
+export default function Edit() {
+  const planSelect = useSelector(({ plan }) => plan);
+  const { loadingUpdate, plan } = planSelect;
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
     defaultValues: plan?.attributes || {description: 'abc'},
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();
-  const loadingUpdate = useSelector(({ plan }) => plan.loadingUpdate);
   function onSubmit(value) {
-    if (plan) {
-      dispatch(updatePlanDetail({...value , id:  props.plan.id}));
+    if (!_.isEmpty(plan)) {
+      dispatch(updatePlanDetail({...value , id:  plan.id}));
     } else {
-      dispatch(addPlan({...value}));
+      dispatch(addPlan({...value, publishedAt: moment()}));
+      history.push({
+        pathname: '/plan',
+      });
     }
-
   }
   const editorRef = useRef(null);
   useEffect(() => {
