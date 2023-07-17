@@ -40,7 +40,9 @@ export default function Edit() {
   const dispatch = useDispatch();
   function onSubmit(value) {
     if (!_.isEmpty(plan)) {
-      dispatch(updatePlanDetail({...value , id:  plan.id}));
+      //const newValue = _.cloneDeep(value);
+      const {comments, symbol, ...newValue} = value;
+      dispatch(updatePlanDetail({...newValue , id:  plan.id}));
     } else {
       dispatch(addPlan({...value, publishedAt: moment()}));
       history.push({
