@@ -20,11 +20,6 @@ WORKDIR ${APP_HOME}
 COPY package*.json ./
 
 RUN yarn
-
-COPY . .
-
-RUN yarn build
-
 # deploy stage
 FROM nginx:${NGINX_TAG}
 

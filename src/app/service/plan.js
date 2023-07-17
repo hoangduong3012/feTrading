@@ -118,8 +118,8 @@ export const DELETE = gql`
 `;
 
 export const UPDATE = gql`
-  mutation updatPlan($id: ID! $data:PlanInput! ) {
-    updatPlan(id: $id data: $data) {
+  mutation updatePlan($id: ID! $data:PlanInput! ) {
+    updatePlan(id: $id data: $data) {
       data {
         ${common}
       }
