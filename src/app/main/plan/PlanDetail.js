@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchPlanDetail } from './store/planSlice';
+import { fetchPlanDetail, planAction } from './store/planSlice';
 import Edit from './Edit';
 import Detail from './Detail';
 
@@ -32,6 +32,7 @@ export default function PlanDetail(props) {
       dispatch(fetchPlanDetail(params.id));
       setIsEdit(false);
     } else {
+      dispatch(planAction.resetPlan());
       setIsEdit(true);
     }
   }, []);

@@ -16,7 +16,7 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import { HOST_URL } from 'app/constant/index';
 import { Controller, useForm } from 'react-hook-form';
 import UploadService from 'app/service/upload';
-import { updatePlanDetail, addPlan } from './store/planSlice';
+import { updatePlanDetail, addPlan, planAction } from './store/planSlice';
 import history from '@history';
 
 // 👇 Custom Styles for the Box Component
@@ -35,7 +35,7 @@ export default function Edit() {
   const { loadingUpdate, plan } = planSelect;
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
-    defaultValues: {...plan?.attributes, planDate: plan?.attributes.planDate ? dayjs(plan?.attributes.planDate) : ''} || {description: 'abc'},
+    defaultValues: plan?.attributes && {...plan?.attributes, planDate: plan?.attributes.planDate ? dayjs(plan?.attributes.planDate) : ''} || {description: 'abc'},
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();

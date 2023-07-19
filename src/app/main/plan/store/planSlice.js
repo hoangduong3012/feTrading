@@ -22,6 +22,7 @@ export const addComment= createAsyncThunk(ADD_COMMENTDETAIL_URL, async (data) =>
   const response = await PlanService.addComment(data);
   return response;
 });
+
 const initialState = {
   optionPaging: {
     filters: {},
@@ -42,15 +43,9 @@ const initialState = {
 const planSlice = createSlice({
   name: 'plan',
   initialState,
-  // reducers: {
-  //   openDialog: (state, action) => {
-  //     state.state = true;
-  //     state.options = action.payload;
-  //   },
-  //   closeDialog: (state, action) => {
-  //     state.state = false;
-  //   },
-  // },
+  reducers: {
+    resetPlan:(state) => {return {...state, plan: {}}},
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchPlanList.pending, (state, action) => {
       return {
@@ -133,6 +128,6 @@ const planSlice = createSlice({
     });
   },
 });
-
+export const planAction = planSlice.actions;
 export default planSlice.reducer;
 //
