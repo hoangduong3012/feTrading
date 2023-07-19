@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from 'moment';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -34,7 +35,7 @@ export default function Edit() {
   const { loadingUpdate, plan } = planSelect;
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
-    defaultValues: plan?.attributes || {description: 'abc'},
+    defaultValues: {...plan?.attributes, planDate: plan?.attributes.planDate ? dayjs(plan?.attributes.planDate) : ''} || {description: 'abc'},
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();
