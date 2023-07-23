@@ -22,34 +22,22 @@ function OrderPage(props) {
   const { t } = useTranslation('order');
   const handleClickAdd = () => {
     history.push({
-      pathname: '/',
+      pathname: '/orderNew',
     });
   }
   return (
     <Root
-      header={
+    header={
+      <>
         <div className="p-24">
           <h4>{t('TITLE')}</h4>
         </div>
-      }
-      contentToolbar={
-        <div className="px-24">
-          <h4>Search Toolbar</h4>
-          <div>
-            {' '}
-            <Button
-              className={clsx('', 'abc')}
-              variant="contained"
-              size="large"
-              color="primary"
-              endIcon={<AddBoxIcon />}
-              onClick={handleClickAdd}
-            >
-              <span>Add new</span>
-            </Button>
-          </div>
-        </div>
-      }
+        <Button color="secondary" size="large" onClick={handleClickAdd}
+        >
+          Add new
+        </Button>
+      </>
+    }
       content={
         <div className="p-24">
           <h4>Trading order Detail</h4>

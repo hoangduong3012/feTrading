@@ -4,6 +4,11 @@ import { TextField, Select, MenuItem, Icon, InputAdornment, Button } from '@mui/
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Editor } from '@tinymce/tinymce-react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import moment from 'moment';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from 'app/store/fuse/messageSlice';
@@ -24,15 +29,14 @@ const schema = yup.object().shape({
 });
 
 export default function Edit(props) {
-  // const [singleFile, setSingleFile] = useState([]);
-  const [fileList, setFileList] = useState([]);
+  const orderSelect = useSelector(({ order }) => order);
+  const { loadingUpdate, order } = orderSelect;
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
-    defaultValues: props.order.attributes,
+    defaultValues: order?.attributes && {...order?.attributes, orderDate: order?.attributes.orderDate ? dayjs(order?.attributes.orderDate) : ''} || {description: 'abc'},
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();
-  const loadingUpdate = useSelector(({ order }) => order.loadingUpdate);
   function onSubmit(value) {
     dispatch(updateOrderDetail({...value , id:  props.order.id}));
   }
@@ -57,7 +61,7 @@ export default function Edit(props) {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Controller
-          name="title"
+          name="ticket"
           control={control}
           render={({ field }) => (
             <TextField
@@ -66,7 +70,7 @@ export default function Edit(props) {
               type="text"
               // error={!!errors.email}
               // helperText={errors?.email?.message}
-              label="Tiêu đề"
+              label="Ticket"
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -78,6 +82,22 @@ export default function Edit(props) {
               }}
               variant="outlined"
             />
+          )}
+        />
+         <Controller
+          name="time"
+          control={control}
+          render={({ field }) => (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                {...field}
+                className="mb-16"
+                type="text"
+                label="Ngày đặt order"
+                variant="outlined"
+                defaultValue={moment()}
+              />
+            </LocalizationProvider>
           )}
         />
         <Controller

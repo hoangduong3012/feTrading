@@ -34,15 +34,9 @@ const initialState = {
 const orderSlice = createSlice({
   name: 'order',
   initialState,
-  // reducers: {
-  //   openDialog: (state, action) => {
-  //     state.state = true;
-  //     state.options = action.payload;
-  //   },
-  //   closeDialog: (state, action) => {
-  //     state.state = false;
-  //   },
-  // },
+  reducers: {
+    resetOrder:(state) => {return {...state, order: {}}},
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchOrderList.pending, (state, action) => {
       return {
@@ -107,4 +101,5 @@ const orderSlice = createSlice({
   },
 });
 
+export const orderAction = orderSlice.actions;
 export default orderSlice.reducer;

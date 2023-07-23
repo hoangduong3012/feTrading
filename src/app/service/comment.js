@@ -75,6 +75,16 @@ export const UPDATE = gql`
     }
   }
 `;
+
+export const REMOVE_COMMENT = gql`
+  mutation deleteComment($id: ID!) {
+    deleteComment(id: $id) {
+      data {
+        ${commonComment}
+      }
+    }
+  }
+`;
 const api = {
   getComments({ filters, pagination, sort }) {
     const client = new ApolloClientWrapper(true).init();
@@ -111,6 +121,15 @@ const api = {
       variables: {
         id: id,
         data: newData,
+      },
+    });
+  },
+  delete(condition) {
+    const client = new ApolloClientWrapper(true).init();
+    return client.mutate({
+      mutation: REMOVE_COMMENT,
+      variables: {
+        id: condition,
       },
     });
   },

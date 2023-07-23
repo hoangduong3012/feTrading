@@ -8,6 +8,8 @@ export const DEFAULT_API_URL = `${
 export const DEFAULT_WS_API_URL = 'http://localhost:3000/graphql';
 export const TYPE_TRADING = ['MA', 'ElliotWave', 'Wyckoff', 'SD', 'SMC'];
 
+export const TYPE_ORDER = ['sell', 'buy'];
+
 // historyTrading
 export const HISTORYTRADING_URL = 'historyTrading/fetchList';
 export const HISTORYTRADINGDETAIL_URL = 'historyTrading/fetchDetail';

@@ -105,7 +105,7 @@ export default function Detail() {
         <Card>
           <CardContent>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item>
                 <Typography gutterBottom variant="subtitle1" component="div">
                   <strong>Description</strong>
                 </Typography>
@@ -136,7 +136,7 @@ export default function Detail() {
           variant="body2"
           color="text.secondary"
         >
-          {moment(c.attributes.commentDate).format('YYYY/MM/DD HH/mm/ss')}
+          {moment(c.attributes.commentDate).format('YYYY/MM/DD HH:mm:ss')}
         </TimelineOppositeContent>
          <TimelineSeparator>
          <TimelineDot>

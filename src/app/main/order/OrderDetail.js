@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchOrderDetail } from './store/orderSlice';
+import { fetchOrderDetail, orderAction } from './store/orderSlice';
 import Edit from './Edit';
 import Detail from './Detail';
 
@@ -24,25 +24,31 @@ export default function OrderDetail(props) {
   const [isEdit, setIsEdit] = useState(false);
   const { t } = useTranslation('order');
   const params = useParams();
-  const order = useSelector(({ order }) => order.orders);
   const dispatch = useDispatch();
 
+
   useEffect(() => {
-    dispatch(fetchOrderDetail(params.id));
-  }, [dispatch, params.id]);
+    if (params.id) {
+      dispatch(fetchOrderDetail(params.id));
+      setIsEdit(false);
+    } else {
+      dispatch(orderAction.resetOrder());
+      setIsEdit(true);
+    }
+  }, []);
 
   return (
     <Root
       header={
         <div className="p-24">
           <h4>{t('TITLE')}</h4>
-          <Button color="secondary" size="large" onClick={(e) => {
+          { params.id && <Button color="secondary" size="large" onClick={(e) => {
           e.preventDefault();
             setIsEdit(!isEdit);
           }}
         >
-          {isEdit ? 'Edit' : 'Detail'}
-        </Button>
+          {!!isEdit ? 'Edit' : 'Detail'}
+        </Button>}
         </div>
         
       }
@@ -51,7 +57,7 @@ export default function OrderDetail(props) {
       // }
       content={
         <>
-            {isEdit ? <Edit order={order} /> : <Detail order={order} />}
+            {isEdit ? <Edit /> : <Detail />}
         </>
       }
     />

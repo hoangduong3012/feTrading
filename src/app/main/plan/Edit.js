@@ -107,49 +107,6 @@ export default function Edit() {
             </LocalizationProvider>
           )}
         />
-        {/* 
-        <Controller
-          name="type"
-          control={control}
-          render={({ field }) => (
-            <>
-              <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelect}>
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {TYPE_TRADING.map((type, index) => (
-                  <MenuItem key={index} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </Select>
-            </>
-          )}
-        />
-        <Controller
-          name="author"
-          control={control}
-          // eslint-disable-next-line no-shadow
-          render={({ field }) => (
-            <TextField
-              {...field}
-              className="mb-16"
-              type="text"
-              label="Tác giả"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Icon className="text-20" color="action">
-                      exp
-                    </Icon>
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-            />
-          )}
-        /> 
-        */}
         <Controller
           name="description"
           control={control}

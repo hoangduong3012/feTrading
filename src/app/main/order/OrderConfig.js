@@ -25,6 +25,10 @@ const OrderConfig = {
       path: 'orderDetail/:id',
       element: <OrderDetail />,
     },
+    {
+      path: 'orderNew',
+      element: <OrderDetail />,
+    },
   ],
 };
 

@@ -44,8 +44,8 @@ const exampleSlice = createSlice({
     builder.addCase(fetchExampleList.fulfilled, (state, action) => {
       return {
         ...state,
-        exampleList: action.payload.data.examples.data,
-        pagination: action.payload.data.examples.meta.pagination,
+        exampleList: action.payload.data.exampleTypes.data,
+        pagination: action.payload.data.exampleTypes.meta.pagination,
         loading: 'success',
       };
     });
