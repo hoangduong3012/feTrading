@@ -12,12 +12,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from 'app/store/fuse/messageSlice';
-import { HOST_URL, TYPE_ORDER } from 'app/constant/index';
+import { HOST_URL, TYPE_TRADING } from 'app/constant/index';
 import { Controller, useForm } from 'react-hook-form';
 import UploadService from 'app/service/upload';
-import history from '@history';
-import { updateOrderDetail, addOrder } from './store/orderSlice';
-import { fetchSymbolList } from '../symbol/store/symbolSlice';
+import { updateOrderDetail } from './store/orderSlice';
+
 // 👇 Custom Styles for the Box Component
 
 const Root = styled('div')({});
@@ -31,31 +30,25 @@ const schema = yup.object().shape({
 
 export default function Edit(props) {
   const orderSelect = useSelector(({ order }) => order);
-  const symbolSelect = useSelector(({ symbol }) => symbol);
   const { loadingUpdate, order } = orderSelect;
-  const { symbolList, pagination, optionPaging } = symbolSelect;
-  const total = pagination?.total ? pagination.total : 0;
-  const page = pagination?.page ? pagination.page - 1 : 0;
-  const pageSize = pagination?.pageSize ? pagination.pageSize : 10;
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
-    defaultValues: (order?.attributes && {
-      ...order?.attributes,
-      orderDate: order?.attributes.orderDate ? dayjs(order?.attributes.orderDate) : '',
-    }) || { description: 'abc' },
+    defaultValues: order?.attributes && {...order?.attributes, orderDate: order?.attributes.orderDate ? dayjs(order?.attributes.orderDate) : ''} || {description: 'abc'},
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();
   function onSubmit(value) {
-    if (!_.isEmpty(value)) {
-      // const newValue = _.cloneDeep(value);
-      const { comments, symbol, ...newValue } = value;
-      dispatch(updateOrderDetail({ ...newValue, id: value.id }));
-    } else {
-      dispatch(addOrder({ ...value, publishedAt: moment() }));
-      history.push({
-        pathname: '/plan',
-      });
+    function onSubmit(value) {
+      if (!_.isEmpty(plan)) {
+        // const newValue = _.cloneDeep(value);
+        const { comments, symbol, ...newValue } = value;
+        dispatch(updateOrderDetail({ ...newValue, id: plan.id }));
+      } else {
+        dispatch(addOrder({ ...value, publishedAt: moment() }));
+        history.push({
+          pathname: '/order',
+        });
+      }
     }
   }
   const editorRef = useRef(null);
@@ -64,24 +57,17 @@ export default function Edit(props) {
   };
 
   useEffect(() => {
-    if (loadingUpdate === 'error') {
+    if (loadingUpdate == 'error') {
       dispatch(showMessage({ message: 'loi khi update' }));
-    } else if (loadingUpdate === 'success') {
+    } else if(loadingUpdate == 'success') {
       dispatch(showMessage({ message: 'update thanh cong' }));
     }
-  }, [dispatch, loadingUpdate]);
-
-  useEffect(() => {
-    dispatch(fetchSymbolList({
-      ...optionPaging,
-      pagination: { page, pageSize },
-    }));
-  }, []);
+  }, [loadingUpdate]);
 
   return (
     <Root>
       <form
-        name="ỎderEditForm"
+        name="historyTradingEditForm"
         className="flex flex-col justify-center w-full"
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -109,7 +95,7 @@ export default function Edit(props) {
             />
           )}
         />
-        <Controller
+         <Controller
           name="time"
           control={control}
           render={({ field }) => (
@@ -126,96 +112,22 @@ export default function Edit(props) {
           )}
         />
         <Controller
-          name="order_price"
-          control={control}
-          render={({ field }) => (
-            <TextField
-             {...field}
-             className="mb-16"
-              label="Giá đặt"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-            />
-          )}
-        />
-        <Controller
-          name="stop_loss"
+          name="personal_ideal"
           control={control}
           render={({ field }) => (
             <TextField
               {...field}
               className="mb-16"
-              label="Giá cắt"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-            />
-          )}
-        />
-        <Controller
-          name="take_profit"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              className="mb-16"
-              label="Giá cắt"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-            />
-          )}
-        />
-        <Controller
-          name="volume"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              className="mb-16"
-              label="khối lượng"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-            />
-          )}
-        />
-        <Controller
-          name="cut_price"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              className="mb-16"
-              label="Giá thực tế cắt"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-            />
-          )}
-        />
-        <Controller
-          name="profit"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              className="mb-16"
-              label="Lời"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
+              type="text"
+              label="Ý tưởng"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Icon className="text-20" color="action">
+                      exp
+                    </Icon>
+                  </InputAdornment>
+                ),
               }}
               variant="outlined"
             />
@@ -231,7 +143,7 @@ export default function Edit(props) {
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                {TYPE_ORDER.map((type, index) => (
+                {TYPE_TRADING.map((type, index) => (
                   <MenuItem key={index} value={type}>
                     {type}
                   </MenuItem>
@@ -240,17 +152,20 @@ export default function Edit(props) {
             </>
           )}
         />
-       <Controller
-          name="symbol"
+        <Controller
+          name="type"
           control={control}
           render={({ field }) => (
             <>
               {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
               <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelect}>
-                {symbolList.map(symbol => (
-                        <MenuItem key={symbol.id} value={symbol.id}>
-                        <em>{symbol.attributes.symbolNm}</em>
-                      </MenuItem>
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {TYPE_TRADING.map((type, index) => (
+                  <MenuItem key={index} value={type}>
+                    {type}
+                  </MenuItem>
                 ))}
               </Select>
             </>
