@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { IDEAL, ORDER_URL, ORDERDETAIL_URL, UPD_ORDERDETAIL_URL } from 'app/constant';
+import { IDEAL, ORDER_URL, ORDERDETAIL_URL, UPD_ORDERDETAIL_URL, ADD_ORDERDETAIL_URL } from 'app/constant';
 import OrderService from 'app/service/order';
 
 export const fetchOrderList = createAsyncThunk(ORDER_URL, async (option) => {
@@ -14,6 +14,11 @@ export const updateOrderDetail = createAsyncThunk(UPD_ORDERDETAIL_URL, async (da
   const response = await OrderService.update(data);
   return response;
 });
+export const addOrder = createAsyncThunk(ADD_ORDERDETAIL_URL, async (data) => {
+  const response = await OrderService.add(data);
+  return response;
+});
+
 const initialState = {
   optionPaging: {
     filters: {},
@@ -93,6 +98,25 @@ const orderSlice = createSlice({
       };
     });
     builder.addCase(updateOrderDetail.rejected, (state, action) => {
+      return {
+        ...state,
+        loadingUpdate: 'error',
+      };
+    });
+    builder.addCase(addOrder.pending, (state, action) => {
+      return {
+        ...state,
+        loadingUpdate: 'pending',
+      };
+    });
+    builder.addCase(addOrder.fulfilled, (state, action) => {
+      return {
+        ...state,
+        plan: action.payload.data.createOrder.data.attributes.plan.data,
+        loadingUpdate: 'success',
+      };
+    });
+    builder.addCase(addOrder.rejected, (state, action) => {
       return {
         ...state,
         loadingUpdate: 'error',

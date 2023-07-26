@@ -6,7 +6,7 @@ import _ from 'lodash';
 export const common = `
 id
 attributes {
-  symbolNm: String
+  symbolNm
   img {
     data {
       id 

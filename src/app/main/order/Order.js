@@ -7,6 +7,7 @@ import FusePageSimple from '@fuse/core/FusePageSimple';
 import { useTranslation } from 'react-i18next';
 import withReducer from 'app/store/withReducer';
 import reducer from './store/orderSlice';
+import symbolreducer from '../symbol/store/symbolSlice';
 import OrderTable from './OrderTable';
 
 const Root = styled(FusePageSimple)({
@@ -50,4 +51,4 @@ function OrderPage(props) {
   );
 }
 
-export default withReducer('order', reducer)(OrderPage);
+export default withReducer('order', reducer)(withReducer('symbol', symbolreducer)(OrderPage));

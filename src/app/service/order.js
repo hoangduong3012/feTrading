@@ -4,7 +4,14 @@ import ApolloClientWrapper from '@util/apolloClient';
 import _ from 'lodash';
 
 export const common = `
-    symbol
+    symbol {
+      data { 
+        id
+        attributes {
+          symbolNm
+        }
+      }
+    } 
     ticket
     time
     type
@@ -148,12 +155,21 @@ const api = {
   },
     update(data) {
       const client = new ApolloClientWrapper(true).init();
-      const {__typename, image_lession, createdAt, id, ...newData} = data;
+      const {__typename, createdAt, id, ...newData} = data;
       return client.mutate({
         mutation: UPDATE,
         variables: {
-          id: id,
+          id,
           data: newData,
+        },
+      });
+    },
+    add(data) {
+      const client = new ApolloClientWrapper(true).init();
+      return client.mutate({
+        mutation: CREATE,
+        variables: {
+          data,
         },
       });
     },

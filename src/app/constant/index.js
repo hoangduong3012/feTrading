@@ -41,3 +41,9 @@ export const COMMENT_URL = 'comment/fetchList';
 export const COMMENTDETAIL_URL = 'comment/fetchDetail';
 export const UPD_COMMENTDETAIL_URL = 'comment/updateDetail';
 export const ADD_COMMENTDETAIL_URL = 'comment/addDetail';
+
+//Symbol
+export const SYMBOL_URL = 'symbol/fetchList';
+export const SYMBOLDETAIL_URL = 'symbol/fetchDetail';
+export const UPD_SYMBOLDETAIL_URL = 'symbol/updateDetail';
+export const ADD_SYMBOLDETAIL_URL = 'symbol/addDetail';

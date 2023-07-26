@@ -1,6 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { gql } from '@apollo/client';
-import { commonComment } from './comment'
 import ApolloClientWrapper from '@util/apolloClient';
 import _ from 'lodash';
 
@@ -166,17 +165,18 @@ const api = {
       return client.mutate({
         mutation: CREATE_COMMENT,
         variables: {
-          data: data,
+          data,
         },
       });
     },
     update(data) {
       const client = new ApolloClientWrapper(true).init();
-      const {__typename, image_lession, createdAt, id, ...newData} = data;
+    // eslint-disable-next-line camelcase
+    const { __typename, image_lession, createdAt, id, ...newData } = data;
       return client.mutate({
         mutation: UPDATE,
         variables: {
-          id: id,
+          id,
           data: newData,
         },
       });

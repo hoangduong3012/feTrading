@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { styled } from '@mui/system';
-import { TextField, Select, MenuItem, Icon, InputAdornment, Button } from '@mui/material';
+import { TextField, Icon, InputAdornment, Button } from '@mui/material';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Editor } from '@tinymce/tinymce-react';
-import _ from "@lodash";
+import _ from '@lodash';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,8 +16,8 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import { HOST_URL } from 'app/constant/index';
 import { Controller, useForm } from 'react-hook-form';
 import UploadService from 'app/service/upload';
-import { updatePlanDetail, addPlan, planAction } from './store/planSlice';
 import history from '@history';
+import { updatePlanDetail, addPlan } from './store/planSlice';
 
 // 👇 Custom Styles for the Box Component
 
@@ -35,17 +35,20 @@ export default function Edit() {
   const { loadingUpdate, plan } = planSelect;
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
-    defaultValues: plan?.attributes && {...plan?.attributes, planDate: plan?.attributes.planDate ? dayjs(plan?.attributes.planDate) : ''} || {description: 'abc'},
+    defaultValues: (plan?.attributes && {
+      ...plan?.attributes,
+      planDate: plan?.attributes.planDate ? dayjs(plan?.attributes.planDate) : '',
+    }) || { description: 'abc' },
     resolver: yupResolver(schema),
   });
   const dispatch = useDispatch();
   function onSubmit(value) {
     if (!_.isEmpty(plan)) {
-      //const newValue = _.cloneDeep(value);
-      const {comments, symbol, ...newValue} = value;
-      dispatch(updatePlanDetail({...newValue , id:  plan.id}));
+      // const newValue = _.cloneDeep(value);
+      const { comments, symbol, ...newValue } = value;
+      dispatch(updatePlanDetail({ ...newValue, id: plan.id }));
     } else {
-      dispatch(addPlan({...value, publishedAt: moment()}));
+      dispatch(addPlan({ ...value, publishedAt: moment() }));
       history.push({
         pathname: '/plan',
       });
@@ -53,12 +56,12 @@ export default function Edit() {
   }
   const editorRef = useRef(null);
   useEffect(() => {
-    if (loadingUpdate == 'error') {
+    if (loadingUpdate === 'error') {
       dispatch(showMessage({ message: 'loi khi update' }));
-    } else if(loadingUpdate == 'success') {
+    } else if (loadingUpdate === 'success') {
       dispatch(showMessage({ message: 'update thanh cong' }));
     }
-  }, [loadingUpdate]);
+  }, [dispatch, loadingUpdate]);
 
   return (
     <Root>
@@ -111,8 +114,7 @@ export default function Edit() {
           name="description"
           control={control}
           // eslint-disable-next-line no-shadow
-          render={({ field: { onChange, value } }) =>
-            (
+          render={({ field: { onChange, value } }) => (
             <Editor
               apiKey="n1426sgvqi9kegeyh05euhj7wbk5jc01essy3d1kbtxgv6pj"
               // eslint-disable-next-line no-return-assign
