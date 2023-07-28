@@ -32,15 +32,8 @@ const Root = styled('div')`
   }
 `;
 const columns = [
-  { id: 'title', label: 'TITLE', minWidth: 170 },
+  { id: 'ticket', label: 'TICKET', minWidth: 170 },
   { id: 'description', label: 'DESCRIPTION', minWidth: 100 },
-  {
-    id: 'personal ideal',
-    label: 'PERSONAL IDEAL',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
   {
     id: 'type',
     label: 'TYPE',
@@ -49,25 +42,60 @@ const columns = [
     format: (value) => value.toLocaleString('en-US'),
   },
   {
-    id: 'author',
-    label: 'AUTHOR',
+    id: 'order_price',
+    label: 'ORDER PRICE',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toLocaleString('en-US'),
+  },
+  {
+    id: 'stop_loss',
+    label: 'STOP LOSS',
     minWidth: 170,
     align: 'right',
     format: (value) => value.toFixed(2),
   },
   {
-    id: 'time lession',
-    label: 'TIME LESSION',
+    id: 'take_profit',
+    label: 'TAKE PROFIT',
     minWidth: 170,
     align: 'right',
     format: (value) => value.toFixed(2),
   },
   {
-    id: 'images',
-    label: 'IMAGES',
+    id: 'volume',
+    label: 'VOLUME',
     minWidth: 170,
     align: 'right',
     format: (value) => value.toFixed(2),
+  },
+  {
+    id: 'cut_price',
+    label: 'CUT PRICE',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: 'cut_price',
+    label: 'CUT PRICE',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: 'profit',
+    label: 'PROFIT',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: 'symbol',
+    label: 'SYMBOL',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value ? value.data.attributes.symbolNm : '',
   },
 ];
 export default function UnstyledTable() {
@@ -130,7 +158,7 @@ export default function UnstyledTable() {
               : orderList
             ).map((row) => (
               <TableRow key={row.id} onClick={() => handleClick(row.id)}>
-                <TableCell>{row.attributes.title}</TableCell>
+                <TableCell>{row.attributes.ticket}</TableCell>
                 <TableCell><Typography
                   variant="body1"
                   dangerouslySetInnerHTML={{
@@ -138,7 +166,7 @@ export default function UnstyledTable() {
                     row.attributes.description,
                   }}
                 /></TableCell>
-                <TableCell>{row.attributes.personal_ideal}</TableCell>
+                <TableCell>{row.attributes.type}</TableCell>
                 <TableCell>{row.attributes.type}</TableCell>
                 <TableCell>{row.attributes.author}</TableCell>
                 <TableCell>

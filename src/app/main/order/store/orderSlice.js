@@ -112,7 +112,7 @@ const orderSlice = createSlice({
     builder.addCase(addOrder.fulfilled, (state, action) => {
       return {
         ...state,
-        plan: action.payload.data.createOrder.data.attributes.plan.data,
+        order: action.payload.data.createOrder.data.attributes.order.data,
         loadingUpdate: 'success',
       };
     });

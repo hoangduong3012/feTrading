@@ -98,7 +98,13 @@ export const ORDER_DETAIL = gql`
 export const CREATE = gql`
   mutation createOrder($data: OrderInput!) {
     createOrder(data: $data) {
-      ${common}
+      data {
+        id
+        attributes {
+          ${common}
+        }
+   
+      }
     }
   }
 `;
@@ -169,7 +175,7 @@ const api = {
       return client.mutate({
         mutation: CREATE,
         variables: {
-          data,
+          data: {...data},
         },
       });
     },
