@@ -167,12 +167,13 @@ export default function UnstyledTable() {
                   }}
                 /></TableCell>
                 <TableCell>{row.attributes.type}</TableCell>
-                <TableCell>{row.attributes.type}</TableCell>
-                <TableCell>{row.attributes.author}</TableCell>
-                <TableCell>
-                  {moment(row.attributes.time_lession).format('DD-MM-YYYY HH:MM:ss')}
-                </TableCell>
-                <TableCell>{row.attributes.images ? row.attributes.images : ''}</TableCell>
+                <TableCell>{row.attributes.order_price}</TableCell>
+                <TableCell>{row.attributes.take_profit}</TableCell>
+                <TableCell>{row.attributes.stop_loss}</TableCell>
+                <TableCell>{row.attributes.volume}</TableCell>
+                <TableCell>{row.attributes.cut_price}</TableCell>
+                <TableCell>{row.attributes.profit}</TableCell>
+                <TableCell>{row.attributes.symbol.data.attributes.symbolNm}</TableCell>
               </TableRow>
             ))}
           </TableBody>
