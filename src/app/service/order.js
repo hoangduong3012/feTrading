@@ -80,7 +80,6 @@ export const CREATE = gql`
         attributes {
           ${common}
         }
-   
       }
     }
   }
@@ -89,7 +88,12 @@ export const CREATE = gql`
 export const DELETE = gql`
   mutation deleteOrder($id: ID!) {
     deleteOrder(id: $id) {
-      ${common}
+      data {
+        id
+        attributes {
+          ${common}
+        }
+      }
     }
   }
 `;
@@ -102,16 +106,6 @@ export const UPDATE = gql`
         attributes {
           ${common}
         }
-      }
-    }
-  }
-`;
-
-export const REMOVE_ORDER = gql`
-  mutation deleteOrder($id: ID!) {
-    deleteOrder(id: $id) {
-      data {
-        ${common}
       }
     }
   }
@@ -159,7 +153,7 @@ const api = {
     deleteOrder(condition) {
       const client = new ApolloClientWrapper(true).init();
       return client.mutate({
-        mutation: REMOVE_ORDER,
+        mutation: DELETE,
         variables: {
           id: condition,
         },

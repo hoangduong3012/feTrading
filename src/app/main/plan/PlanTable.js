@@ -1,27 +1,30 @@
-import React, { useEffect } from 'react';
-import { styled } from '@mui/system';
-import TablePagination from '@mui/material/TablePagination';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import TableContainer from '@mui/material/TableContainer';
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
-import LaptopMacIcon from '@mui/icons-material/LaptopMac';
-import Typography from '@mui/material/Typography';
-import TableHead from '@mui/material/TableHead';
-import history from '@history';
-import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
-import { fetchPlanList } from './store/planSlice';
+import React, { useEffect } from "react";
+import { styled } from "@mui/system";
+import TablePagination from "@mui/material/TablePagination";
+import Table from "@mui/material/Table";
+import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import TableContainer from "@mui/material/TableContainer";
+import Timeline from "@mui/lab/Timeline";
+import TimelineItem from "@mui/lab/TimelineItem";
+import TimelineSeparator from "@mui/lab/TimelineSeparator";
+import TimelineConnector from "@mui/lab/TimelineConnector";
+import TimelineContent from "@mui/lab/TimelineContent";
+import TimelineDot from "@mui/lab/TimelineDot";
+import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
+import LaptopMacIcon from "@mui/icons-material/LaptopMac";
+import Typography from "@mui/material/Typography";
+import TableHead from "@mui/material/TableHead";
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import history from "@history";
+import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+import { fetchPlanList, deletePlan } from "./store/planSlice";
+import { closeDialog, openDialog } from 'app/store/fuse/dialogSlice';
 
-const Root = styled('div')`
+const Root = styled("div")`
   table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -40,34 +43,38 @@ const Root = styled('div')`
   }
 `;
 const columns = [
-  { id: 'title', label: 'TITLE', minWidth: 170 },
-  { id: 'description', label: 'DESCRIPTION', minWidth: 100 },
+  { id: "title", label: "TITLE", minWidth: 170 },
   {
-    id: 'planDate',
-    label: 'Plan Date',
+    id: "planDate",
+    label: "Plan Date",
     minWidth: 170,
-    align: 'right',
-    format: (value) => moment(value).format('YYYY/MM/DD'),
+    align: "right",
+    format: (value) => moment(value).format("YYYY/MM/DD"),
   },
   {
-    id: 'symbol',
-    label: 'Symbol',
+    id: "symbol",
+    label: "Symbol",
     minWidth: 170,
-    align: 'right',
+    align: "right",
     format: (value) => value.data.attributes.symbolNm,
   },
   {
-    id: 'comments',
-    label: 'COMMENT',
+    id: "comments",
+    label: "COMMENT",
     minWidth: 170,
-    align: 'right',
-    format: (value) => value.map(v => v.data.attributes.comment),
+    align: "right",
+    format: (value) => value.map((v) => v.data.attributes.comment),
+  },
+  {
+    id: "action",
+    label: "ACTION",
+    minWidth: 170,
   },
 ];
 export default function UnstyledTable() {
   // eslint-disable-next-line no-shadow
   const plan = useSelector(({ plan }) => plan);
-  const { planList, pagination, optionPaging } = plan;
+  const { planList, pagination, optionPaging, plan: detail } = plan;
   const total = pagination?.total ? pagination.total : 0;
   const page = pagination?.page ? pagination.page - 1 : 0;
   const pageSize = pagination?.pageSize ? pagination.pageSize : 10;
@@ -99,6 +106,44 @@ export default function UnstyledTable() {
       pathname: `/planDetail/${id}`,
     });
   };
+  const handleDelete= (id) => {
+    dispatch(
+      openDialog({
+        children: (
+          <>
+            <DialogTitle id="alert-dialog-title">Xác nhận xóa plan</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Có chắc bạn muốn xóa không?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => closePlanDialog()}
+                color="primary"
+              >
+                Không đồng ý
+              </Button>
+              <Button
+                onClick={() => deleteChoosePlan(id)}
+                color="primary"
+                autoFocus
+              >
+                Đồng ý
+              </Button>
+            </DialogActions>
+          </>
+        )
+      })
+    )
+  };
+  const closePlanDialog = () => {
+    dispatch(closeDialog());
+  };
+  const deleteChoosePlan = (id) => {
+    dispatch(deletePlan(id));
+    closePlanDialog();
+  };
   return planList && planList.length > 0 ? (
     <Root>
       <TableContainer>
@@ -123,58 +168,77 @@ export default function UnstyledTable() {
               ? planList.slice(page * pageSize, page * pageSize + pageSize)
               : planList
             ).map((row) => (
-              <TableRow key={row.id} onClick={() => handleClick(row.id)}>
-                <TableCell>{row.attributes.title}</TableCell>
-                <TableCell><Typography
-                  variant="body1"
-                  dangerouslySetInnerHTML={{
-                    __html:
-                    row.attributes.description,
-                  }}
-                /></TableCell>
-                {/* <TableCell>{row.attributes.personal_ideal}</TableCell>
-                <TableCell>{row.attributes.type}</TableCell>
-                <TableCell>{row.attributes.author}</TableCell> */}
+              <TableRow key={row.id} >
+                <TableCell onClick={() => handleClick(row.id)}>{row.attributes.title}</TableCell>
+                {/* <TableCell>
+                  <Typography
+                    variant="body1"
+                    dangerouslySetInnerHTML={{
+                      __html: row.attributes.description,
+                    }}
+                  />
+                </TableCell> */}
                 <TableCell>
-                  {row.attributes.planDate && moment(row.attributes.planDate).format('DD-MM-YYYY HH:mm:ss')}
+                  {row.attributes.planDate &&
+                    moment(row.attributes.planDate).format(
+                      "DD-MM-YYYY HH:mm:ss"
+                    )}
                 </TableCell>
-                <TableCell>{row.attributes.symbol.data?.attributes?.symbolNm}</TableCell>
-                <TableCell><Timeline position="left">
-      {row.attributes.comments.data && row.attributes.comments.data.map(c => (
-         <TimelineItem>
-           <TimelineOppositeContent
-          sx={{ m: 'auto 0' }}
-          align="right"
-          variant="body2"
-          color="text.secondary"
-        >
-          <div>{moment(c.attributes.commentDate).format('DD-MM-YYYY')}</div>
-          <div>{moment(c.attributes.commentDate).format('HH:mm:ss')}</div>
-        </TimelineOppositeContent>
-         <TimelineSeparator>
-         <TimelineDot>
-            <LaptopMacIcon />
-          </TimelineDot>
-           <TimelineConnector />
-         </TimelineSeparator>
-         <TimelineContent>{c.attributes.comment}</TimelineContent>
-       </TimelineItem>
-      ))}
-      </Timeline></TableCell>
+                <TableCell>
+                  {row.attributes.symbol.data?.attributes?.symbolNm}
+                </TableCell>
+                <TableCell>
+                  <Timeline position="left">
+                    {row.attributes.comments.data &&
+                      row.attributes.comments.data.map((c) => (
+                        <TimelineItem>
+                          <TimelineOppositeContent
+                            sx={{ m: "auto 0" }}
+                            align="right"
+                            variant="body2"
+                            color="text.secondary"
+                          >
+                            <div>
+                              {moment(c.attributes.commentDate).format(
+                                "DD-MM-YYYY"
+                              )}
+                            </div>
+                            <div>
+                              {moment(c.attributes.commentDate).format(
+                                "HH:mm:ss"
+                              )}
+                            </div>
+                          </TimelineOppositeContent>
+                          <TimelineSeparator>
+                            <TimelineDot>
+                              <LaptopMacIcon />
+                            </TimelineDot>
+                            <TimelineConnector />
+                          </TimelineSeparator>
+                          <TimelineContent>
+                            {c.attributes.comment}
+                          </TimelineContent>
+                        </TimelineItem>
+                      ))}
+                  </Timeline>
+                </TableCell>
+                <TableCell>
+                  <DeleteOutlinedIcon onClick={() => handleDelete(row.id)}/>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+        rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
         component="div"
         count={total}
         rowsPerPage={pageSize}
         page={page}
         componentsProps={{
           select: {
-            'aria-label': 'rows per page',
+            "aria-label": "rows per page",
           },
           actions: {
             showFirstButton: true,

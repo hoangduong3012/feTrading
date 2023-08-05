@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { IDEAL, PLAN_URL, PLANDETAIL_URL, UPD_PLANDETAIL_URL, ADD_PLANDETAIL_URL, ADD_COMMENTDETAIL_URL } from 'app/constant';
+import { IDEAL, PLAN_URL, PLANDETAIL_URL, UPD_PLANDETAIL_URL, ADD_PLANDETAIL_URL, ADD_COMMENTDETAIL_URL, DELETEPLAN_URL } from 'app/constant';
 import PlanService from 'app/service/plan';
+import history from '@history';
 
 export const fetchPlanList = createAsyncThunk(PLAN_URL, async (option) => {
   const response = await PlanService.getPlans(option);
@@ -10,12 +11,20 @@ export const fetchPlanDetail = createAsyncThunk(PLANDETAIL_URL, async (id) => {
   const response = await PlanService.getPlan(id);
   return response;
 });
+export const deletePlan = createAsyncThunk(DELETEPLAN_URL, async (id, {dispatch}) => {
+  const response = await PlanService.deletePlan(id);
+  dispatch(fetchPlanList(initialState.optionPaging));
+  return response;
+});
 export const updatePlanDetail = createAsyncThunk(UPD_PLANDETAIL_URL, async (data) => {
   const response = await PlanService.update(data);
   return response;
 });
 export const addPlan = createAsyncThunk(ADD_PLANDETAIL_URL, async (data) => {
   const response = await PlanService.add(data);
+  history.push({
+    pathname: '/plan',
+  });
   return response;
 });
 export const addComment = createAsyncThunk(ADD_COMMENTDETAIL_URL, async (data) => {
@@ -38,6 +47,7 @@ const initialState = {
   pagination: {},
   loading: IDEAL,
   loadingUpdate:IDEAL,
+  loadingDelete:IDEAL,
   error: {},
 }
 const planSlice = createSlice({
@@ -143,6 +153,25 @@ const planSlice = createSlice({
       return {
         ...state,
         loadingUpdate: 'error',
+      };
+    });
+    builder.addCase(deletePlan.pending, (state, action) => {
+      return {
+        ...state,
+        loadingDelete: 'pending',
+      };
+    });
+    builder.addCase(deletePlan.fulfilled, (state, action) => {
+      return {
+        ...state,
+        plan: action.payload.data.deletePlan.data,
+        loadingDelete: 'success',
+      };
+    });
+    builder.addCase(deletePlan.rejected, (state, action) => {
+      return {
+        ...state,
+        loadingDelete: 'error',
       };
     });
   },

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { styled } from '@mui/system';
-import { TextField, Icon, InputAdornment, Button } from '@mui/material';
+import { TextField, Icon, InputAdornment, Button, Select , MenuItem} from '@mui/material';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Editor } from '@tinymce/tinymce-react';
 import _ from '@lodash';
@@ -16,8 +16,8 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import { HOST_URL } from 'app/constant/index';
 import { Controller, useForm } from 'react-hook-form';
 import UploadService from 'app/service/upload';
-import history from '@history';
 import { updatePlanDetail, addPlan } from './store/planSlice';
+import { fetchSymbolList } from '../symbol/store/symbolSlice';
 
 // 👇 Custom Styles for the Box Component
 
@@ -32,11 +32,17 @@ const schema = yup.object().shape({
 
 export default function Edit() {
   const planSelect = useSelector(({ plan }) => plan);
+  const symbolSelect = useSelector(({ symbol }) => symbol);
+  const { symbolList, pagination, optionPaging} = symbolSelect;
+  const total = pagination?.total ? pagination.total : 0;
+  const page = pagination?.page ? pagination.page - 1 : 0;
+  const pageSize = pagination?.pageSize ? pagination.pageSize : 10;
   const { loadingUpdate, plan } = planSelect;
   const { control, handleSubmit, setValue } = useForm({
     mode: 'onChange',
     defaultValues: (plan?.attributes && {
       ...plan?.attributes,
+      symbol: plan?.attributes.symbol.data?.id,
       planDate: plan?.attributes.planDate ? dayjs(plan?.attributes.planDate) : '',
     }) || { description: 'abc' },
     resolver: yupResolver(schema),
@@ -49,11 +55,11 @@ export default function Edit() {
       dispatch(updatePlanDetail({ ...newValue, id: plan.id }));
     } else {
       dispatch(addPlan({ ...value, publishedAt: moment() }));
-      history.push({
-        pathname: '/plan',
-      });
     }
   }
+  const handleChangeSelectSymbol = (value) => {
+    setValue('symbol', value.target.value, { shouldTouch: true });
+  };
   const editorRef = useRef(null);
   useEffect(() => {
     if (loadingUpdate === 'error') {
@@ -62,6 +68,13 @@ export default function Edit() {
       dispatch(showMessage({ message: 'update thanh cong' }));
     }
   }, [dispatch, loadingUpdate]);
+
+  useEffect(() => {
+    dispatch(fetchSymbolList({
+      ...optionPaging,
+      pagination: { page, pageSize },
+    }));
+  }, []);
 
   return (
     <Root>
@@ -92,6 +105,46 @@ export default function Edit() {
               }}
               variant="outlined"
             />
+          )}
+        />
+        <Controller
+          name="author"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              className="mb-16"
+              type="text"
+              // error={!!errors.email}
+              // helperText={errors?.email?.message}
+              label="Tác giả"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Icon className="text-20" color="action">
+                      exp
+                    </Icon>
+                  </InputAdornment>
+                ),
+              }}
+              variant="outlined"
+            />
+          )}
+        />
+        <Controller
+          name="symbol"
+          control={control}
+          render={({ field }) => (
+            <>
+              {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
+              <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelectSymbol} value={field.value}>
+                {symbolList.map(symbol => (
+                        <MenuItem key={symbol.id} value={symbol.id}>
+                        <em>{symbol.attributes.symbolNm}</em>
+                      </MenuItem>
+                ))}
+              </Select>
+            </>
           )}
         />
         <Controller

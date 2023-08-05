@@ -15,7 +15,6 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import { HOST_URL, TYPE_ORDER, STATUS_TRADING } from 'app/constant/index';
 import { Controller, useForm } from 'react-hook-form';
 import UploadService from 'app/service/upload';
-import history from '@history';
 import { updateOrderDetail, addOrder } from './store/orderSlice';
 import { fetchSymbolList } from '../symbol/store/symbolSlice';
 // 👇 Custom Styles for the Box Component
@@ -67,9 +66,6 @@ export default function Edit(props) {
       dispatch(updateOrderDetail({ ...newValue, id: order.id }));
     } else {
       dispatch(addOrder({ ...newValue, publishedAt: moment() }));
-      history.push({
-        pathname: '/order',
-      });
     }
   }
   const editorRef = useRef(null);

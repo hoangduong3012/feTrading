@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { IDEAL, ORDER_URL, ORDERDETAIL_URL, UPD_ORDERDETAIL_URL, ADD_ORDERDETAIL_URL } from 'app/constant';
+import { IDEAL, ORDER_URL, ORDERDETAIL_URL, UPD_ORDERDETAIL_URL, ADD_ORDERDETAIL_URL, DELETEORDER_URL } from 'app/constant';
 import OrderService from 'app/service/order';
+import history from '@history';
 
 export const fetchOrderList = createAsyncThunk(ORDER_URL, async (option) => {
   const response = await OrderService.getOrders(option);
@@ -10,12 +11,21 @@ export const fetchOrderDetail = createAsyncThunk(ORDERDETAIL_URL, async (id) => 
   const response = await OrderService.getOrder(id);
   return response;
 });
+export const deleteOrder = createAsyncThunk(DELETEORDER_URL, async (id, {dispatch}) => {
+  const response = await OrderService.deleteOrder(id);
+  dispatch(fetchOrderList(initialState.optionPaging));
+  return response;
+});
 export const updateOrderDetail = createAsyncThunk(UPD_ORDERDETAIL_URL, async (data) => {
   const response = await OrderService.update(data);
   return response;
 });
-export const addOrder = createAsyncThunk(ADD_ORDERDETAIL_URL, async (data) => {
+export const addOrder = createAsyncThunk(ADD_ORDERDETAIL_URL, async (data, {dispatch}) => {
   const response = await OrderService.add(data);
+  dispatch(fetchOrderList(initialState.optionPaging));
+  history.push({
+    pathname: '/order',
+  });
   return response;
 });
 
@@ -120,6 +130,25 @@ const orderSlice = createSlice({
       return {
         ...state,
         loadingUpdate: 'error',
+      };
+    });
+    builder.addCase(deleteOrder.pending, (state, action) => {
+      return {
+        ...state,
+        loadingDelete: 'pending',
+      };
+    });
+    builder.addCase(deleteOrder.fulfilled, (state, action) => {
+      return {
+        ...state,
+        plan: action.payload.data.deleteOrder.data,
+        loadingDelete: 'success',
+      };
+    });
+    builder.addCase(deleteOrder.rejected, (state, action) => {
+      return {
+        ...state,
+        loadingDelete: 'error',
       };
     });
   },

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { styled } from '@mui/system';
 import TablePagination from '@mui/material/TablePagination';
+import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,7 +12,9 @@ import TableHead from '@mui/material/TableHead';
 import history from '@history';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import { fetchOrderList } from './store/orderSlice';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { fetchOrderList, deleteOrder } from './store/orderSlice';
+import { closeDialog, openDialog } from 'app/store/fuse/dialogSlice';
 
 const Root = styled('div')`
   table {
@@ -33,7 +36,7 @@ const Root = styled('div')`
 `;
 const columns = [
   { id: 'ticket', label: 'TICKET', minWidth: 170 },
-  { id: 'time', label: 'Time', minWidth: 170 },
+  { id: 'time', label: 'TIME', minWidth: 170 },
   { id: 'description', label: 'DESCRIPTION', minWidth: 100 },
   {
     id: 'order_price',
@@ -98,6 +101,11 @@ const columns = [
     align: 'right',
     format: (value) => value ? value.data.attributes.symbolNm : '',
   },
+  {
+    id: "action",
+    label: "ACTION",
+    minWidth: 170,
+  },
 ];
 export default function UnstyledTable() {
   // eslint-disable-next-line no-shadow
@@ -121,6 +129,37 @@ export default function UnstyledTable() {
     );
   };
 
+  const handleDelete= (id) => {
+    dispatch(
+      openDialog({
+        children: (
+          <>
+            <DialogTitle id="alert-dialog-title">Xác nhận xóa Order</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Có chắc bạn muốn xóa không?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => closeOrderDialog()}
+                color="primary"
+              >
+                Không đồng ý
+              </Button>
+              <Button
+                onClick={() => deleteChooseOrder(id)}
+                color="primary"
+                autoFocus
+              >
+                Đồng ý
+              </Button>
+            </DialogActions>
+          </>
+        )
+      })
+    )
+  };
   const handleChangeRowsPerPage = (event) => {
     dispatch(
       fetchOrderList({
@@ -133,6 +172,13 @@ export default function UnstyledTable() {
     history.push({
       pathname: `/orderDetail/${id}`,
     });
+  };
+  const closeOrderDialog = () => {
+    dispatch(closeDialog());
+  };
+  const deleteChooseOrder = (id) => {
+    dispatch(deleteOrder(id));
+    closeOrderDialog();
   };
   return orderList && orderList.length > 0 ? (
     <Root>
@@ -158,25 +204,28 @@ export default function UnstyledTable() {
               ? orderList.slice(page * pageSize, page * pageSize + pageSize)
               : orderList
             ).map((row) => (
-              <TableRow key={row.id} onClick={() => handleClick(row.id)}>
-                <TableCell>{row.attributes.ticket}</TableCell>
-                <TableCell>{row.attributes.time && moment(row.attributes.time).format('YYYY/MM/DD HH:mm:ss')}</TableCell>
-                <TableCell><Typography
+              <TableRow key={row.id}>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.ticket}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.time && moment(row.attributes.time).format('YYYY/MM/DD HH:mm:ss')}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}><Typography
                   variant="body1"
                   dangerouslySetInnerHTML={{
                     __html:
                     row.attributes.description,
                   }}
                 /></TableCell>
-                <TableCell>{row.attributes.order_price}</TableCell>
-                <TableCell>{row.attributes.take_profit}</TableCell>
-                <TableCell>{row.attributes.stop_loss}</TableCell>
-                <TableCell>{row.attributes.volume}</TableCell>
-                <TableCell>{row.attributes.cut_price}</TableCell>
-                <TableCell>{row.attributes.profit}</TableCell>
-                <TableCell>{row.attributes.status}</TableCell>
-                <TableCell>{row.attributes.type}</TableCell>
-                <TableCell>{row.attributes.symbol.data?.attributes.symbolNm}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.order_price}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.take_profit}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.stop_loss}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.volume}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.cut_price}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.profit}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.status}</TableCell>
+                <TableCell  onClick={() => handleClick(row.id)}>{row.attributes.type}</TableCell>
+                <TableCell onClick={() => handleClick(row.id)} >{row.attributes.symbol.data?.attributes.symbolNm}</TableCell>
+                <TableCell>
+                  <DeleteOutlinedIcon onClick={() => handleDelete(row.id)}/>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

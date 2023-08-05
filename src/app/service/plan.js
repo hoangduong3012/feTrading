@@ -109,11 +109,13 @@ mutation createComment($data: CommentInput!) {
 `;
 
 export const DELETE = gql`
-  mutation deletePlan($id: ID!) {
-    deletePlan(id: $id) {
+mutation deletePlan($id: ID!) {
+  deletePlan(id: $id) {
+    data {
       ${common}
     }
   }
+}
 `;
 
 export const UPDATE = gql`
@@ -148,6 +150,13 @@ const api = {
     const client = new ApolloClientWrapper(true).init();
     return client.query({
       query: PLAN_DETAIL,
+      variables: { id },
+    });
+  },
+  deletePlan(id) {
+    const client = new ApolloClientWrapper(true).init();
+    return client.mutate({
+      mutation: DELETE,
       variables: { id },
     });
   },

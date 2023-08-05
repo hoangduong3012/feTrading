@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import withReducer from 'app/store/withReducer';
 import reducer from './store/planSlice';
 import PlanTable from './PlanTable';
+import symbolreducer from '../symbol/store/symbolSlice';
 
 const Root = styled(FusePageSimple)({
   '& .FusePageSimple-header': {},
@@ -48,4 +49,4 @@ function PlanPage(props) {
   );
 }
 
-export default withReducer('plan', reducer)(PlanPage);
+export default withReducer('plan', reducer)(withReducer('symbol', symbolreducer)(PlanPage));

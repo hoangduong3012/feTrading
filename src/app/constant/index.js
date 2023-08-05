@@ -34,6 +34,7 @@ export const UPD_PRACTICEDETAIL_URL = 'practice/updateDetail';
 //Plan
 export const PLAN_URL = 'plan/fetchList';
 export const PLANDETAIL_URL = 'plan/fetchDetail';
+export const DELETEPLAN_URL = 'plan/delete';
 export const UPD_PLANDETAIL_URL = 'plan/updateDetail';
 export const ADD_PLANDETAIL_URL = 'plan/addDetail';
 
@@ -51,3 +52,4 @@ export const ADD_SYMBOLDETAIL_URL = 'symbol/addDetail';
 
 //Order
 export const ADD_ORDERDETAIL_URL = 'order/addDetail';
+export const DELETEORDER_URL = 'order/delete';
