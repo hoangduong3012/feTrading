@@ -24,31 +24,8 @@ export const common = `
     createdAt
     updatedAt
     publishedAt
-    order_detail {
-      data {
-        id
-        attributes {
-          title
-          description
-          explain_reason_entry
-          image_detail {
-            data {
-              id
-              attributes {
-                url
-                name
-                caption
-                width
-                height
-              }
-            }
-          }
-          createdAt
-          updatedAt
-          publishedAt
-        }
-      }
-    }
+    status
+    description
 `
 export const ORDER = gql`
   query orders(
@@ -118,8 +95,8 @@ export const DELETE = gql`
 `;
 
 export const UPDATE = gql`
-  mutation updatOrder($id: ID! $data:OrderInput! ) {
-    updatOrder(id: $id data: $data) {
+  mutation updateOrder($id: ID! $data:OrderInput! ) {
+    updateOrder(id: $id data: $data) {
       data {
         id
         attributes {

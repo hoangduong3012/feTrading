@@ -12,7 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from 'app/store/fuse/messageSlice';
-import { HOST_URL, TYPE_ORDER } from 'app/constant/index';
+import { HOST_URL, TYPE_ORDER, STATUS_TRADING } from 'app/constant/index';
 import { Controller, useForm } from 'react-hook-form';
 import UploadService from 'app/service/upload';
 import history from '@history';
@@ -41,6 +41,7 @@ export default function Edit(props) {
     mode: 'onChange',
     defaultValues: (order?.attributes && {
       ...order?.attributes,
+      symbol: order?.attributes.symbol.data?.id,
       time: order?.attributes.time ? dayjs(order?.attributes.time) : '',
     }) || { description: 'abc' },
     resolver: yupResolver(schema),
@@ -57,9 +58,13 @@ export default function Edit(props) {
       profit: Number(value.profit),
       profit: Number(value.profit),
       symbol: value.symbol,
+      description: value.description,
+      status: value.status,
+      time: value.time,
+      type: value.type,
     };
     if (!_.isEmpty(order)) {
-      dispatch(updateOrderDetail({ ...newValue, id: value.id }));
+      dispatch(updateOrderDetail({ ...newValue, id: order.id }));
     } else {
       dispatch(addOrder({ ...newValue, publishedAt: moment() }));
       history.push({
@@ -73,6 +78,9 @@ export default function Edit(props) {
   };
   const handleChangeSelectSymbol = (value) => {
     setValue('symbol', value.target.value, { shouldTouch: true });
+  };
+  const handleChangeSelectStatus = (value) => {
+    setValue('status', value.target.value, { shouldTouch: true });
   };
   useEffect(() => {
     if (loadingUpdate === 'error') {
@@ -93,9 +101,10 @@ export default function Edit(props) {
     <Root>
       <form
         name="OrderEditForm"
-        className="flex flex-col justify-center w-full"
+        className=" mx-24 flex flex-col justify-center w-full"
         onSubmit={handleSubmit(onSubmit)}
       >
+        <div class="grid grid-cols-2 gap-4">
         <Controller
           name="ticket"
           control={control}
@@ -127,22 +136,24 @@ export default function Edit(props) {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateTimePicker
                 {...field}
-                className="mb-16"
+                className="mb-16 "
                 type="text"
                 label="Ngày đặt order"
                 variant="outlined"
-                defaultValue={moment()}
+                //defaultValue={moment()}
               />
             </LocalizationProvider>
           )}
         />
+        </div>
+        <div class="grid grid-cols-4 gap-4">
         <Controller
           name="order_price"
           control={control}
           render={({ field }) => (
             <TextField
              {...field}
-             className="mb-16"
+              className="mb-16"
               label="Giá đặt"
               type="number"
               InputLabelProps={{
@@ -238,7 +249,7 @@ export default function Edit(props) {
           render={({ field }) => (
             <>
               {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
-              <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelect}>
+              <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelect} value={field.value}>
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
@@ -257,7 +268,7 @@ export default function Edit(props) {
           render={({ field }) => (
             <>
               {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
-              <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelectSymbol}>
+              <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelectSymbol} value={field.value}>
                 {symbolList.map(symbol => (
                         <MenuItem key={symbol.id} value={symbol.id}>
                         <em>{symbol.attributes.symbolNm}</em>
@@ -267,27 +278,22 @@ export default function Edit(props) {
             </>
           )}
         />
+        </div>
         <Controller
-          name="author"
+          name="status"
           control={control}
           // eslint-disable-next-line no-shadow
           render={({ field }) => (
-            <TextField
-              {...field}
-              className="mb-16"
-              type="text"
-              label="Tác giả"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Icon className="text-20" color="action">
-                      exp
-                    </Icon>
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-            />
+            <>
+              {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
+              <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelectStatus} value={field.value}>
+                {STATUS_TRADING.map(status => (
+                        <MenuItem key={status} value={status}>
+                        <em>{status}</em>
+                      </MenuItem>
+                ))}
+              </Select>
+            </>
           )}
         />
         <Controller
@@ -300,7 +306,7 @@ export default function Edit(props) {
               // eslint-disable-next-line no-return-assign
               onInit={(_evt, editor) => (editorRef.current = editor)}
               onEditorChange={onChange}
-              initialValue={value}
+              value={value}
               init={{
                 height: 500,
                 images_upload_handler: (blobInfo, _progress) =>

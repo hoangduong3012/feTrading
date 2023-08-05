@@ -14,11 +14,11 @@ export const updatePlanDetail = createAsyncThunk(UPD_PLANDETAIL_URL, async (data
   const response = await PlanService.update(data);
   return response;
 });
-export const addPlan= createAsyncThunk(ADD_PLANDETAIL_URL, async (data) => {
+export const addPlan = createAsyncThunk(ADD_PLANDETAIL_URL, async (data) => {
   const response = await PlanService.add(data);
   return response;
 });
-export const addComment= createAsyncThunk(ADD_COMMENTDETAIL_URL, async (data) => {
+export const addComment = createAsyncThunk(ADD_COMMENTDETAIL_URL, async (data) => {
   const response = await PlanService.addComment(data);
   return response;
 });
@@ -121,6 +121,25 @@ const planSlice = createSlice({
       };
     });
     builder.addCase(addComment.rejected, (state, action) => {
+      return {
+        ...state,
+        loadingUpdate: 'error',
+      };
+    });
+    builder.addCase(addPlan.pending, (state, action) => {
+      return {
+        ...state,
+        loadingUpdate: 'pending',
+      };
+    });
+    builder.addCase(addPlan.fulfilled, (state, action) => {
+      return {
+        ...state,
+        plan: action.payload.data.createPlan.data,
+        loadingUpdate: 'success',
+      };
+    });
+    builder.addCase(addPlan.rejected, (state, action) => {
       return {
         ...state,
         loadingUpdate: 'error',

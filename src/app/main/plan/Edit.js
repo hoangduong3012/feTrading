@@ -105,7 +105,7 @@ export default function Edit() {
                 type="text"
                 label="ngay len y tuong"
                 variant="outlined"
-                defaultValue={moment()}
+               // defaultValue={moment()}
               />
             </LocalizationProvider>
           )}

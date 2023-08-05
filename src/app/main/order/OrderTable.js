@@ -33,14 +33,8 @@ const Root = styled('div')`
 `;
 const columns = [
   { id: 'ticket', label: 'TICKET', minWidth: 170 },
+  { id: 'time', label: 'Time', minWidth: 170 },
   { id: 'description', label: 'DESCRIPTION', minWidth: 100 },
-  {
-    id: 'type',
-    label: 'TYPE',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
   {
     id: 'order_price',
     label: 'ORDER PRICE',
@@ -77,18 +71,25 @@ const columns = [
     format: (value) => value.toFixed(2),
   },
   {
-    id: 'cut_price',
-    label: 'CUT PRICE',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
-  {
     id: 'profit',
     label: 'PROFIT',
     minWidth: 170,
     align: 'right',
     format: (value) => value.toFixed(2),
+  },
+  {
+    id: 'status',
+    label: 'STATUS',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value,
+  },
+  {
+    id: 'type',
+    label: 'TYPE',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value,
   },
   {
     id: 'symbol',
@@ -159,6 +160,7 @@ export default function UnstyledTable() {
             ).map((row) => (
               <TableRow key={row.id} onClick={() => handleClick(row.id)}>
                 <TableCell>{row.attributes.ticket}</TableCell>
+                <TableCell>{row.attributes.time && moment(row.attributes.time).format('YYYY/MM/DD HH:mm:ss')}</TableCell>
                 <TableCell><Typography
                   variant="body1"
                   dangerouslySetInnerHTML={{
@@ -166,14 +168,15 @@ export default function UnstyledTable() {
                     row.attributes.description,
                   }}
                 /></TableCell>
-                <TableCell>{row.attributes.type}</TableCell>
                 <TableCell>{row.attributes.order_price}</TableCell>
                 <TableCell>{row.attributes.take_profit}</TableCell>
                 <TableCell>{row.attributes.stop_loss}</TableCell>
                 <TableCell>{row.attributes.volume}</TableCell>
                 <TableCell>{row.attributes.cut_price}</TableCell>
                 <TableCell>{row.attributes.profit}</TableCell>
-                <TableCell>{row.attributes.symbol.data.attributes.symbolNm}</TableCell>
+                <TableCell>{row.attributes.status}</TableCell>
+                <TableCell>{row.attributes.type}</TableCell>
+                <TableCell>{row.attributes.symbol.data?.attributes.symbolNm}</TableCell>
               </TableRow>
             ))}
           </TableBody>

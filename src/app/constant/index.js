@@ -10,6 +10,7 @@ export const TYPE_TRADING = ['MA', 'ElliotWave', 'Wyckoff', 'SD', 'SMC'];
 
 export const TYPE_ORDER = ['sell', 'buy'];
 
+export const STATUS_TRADING = ['pending', 'active', 'cancel', 'done'];
 // historyTrading
 export const HISTORYTRADING_URL = 'historyTrading/fetchList';
 export const HISTORYTRADINGDETAIL_URL = 'historyTrading/fetchDetail';
