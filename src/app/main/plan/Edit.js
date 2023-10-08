@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { styled } from '@mui/system';
-import { TextField, Icon, InputAdornment, Button, Select , MenuItem} from '@mui/material';
+import { TextField, Icon, InputAdornment, Button, Select, MenuItem } from '@mui/material';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Editor } from '@tinymce/tinymce-react';
 import _ from '@lodash';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { blobToImage } from 'helper/imageHelper';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -33,7 +34,7 @@ const schema = yup.object().shape({
 export default function Edit() {
   const planSelect = useSelector(({ plan }) => plan);
   const symbolSelect = useSelector(({ symbol }) => symbol);
-  const { symbolList, pagination, optionPaging} = symbolSelect;
+  const { symbolList, pagination, optionPaging } = symbolSelect;
   const total = pagination?.total ? pagination.total : 0;
   const page = pagination?.page ? pagination.page - 1 : 0;
   const pageSize = pagination?.pageSize ? pagination.pageSize : 10;
@@ -70,10 +71,12 @@ export default function Edit() {
   }, [dispatch, loadingUpdate]);
 
   useEffect(() => {
-    dispatch(fetchSymbolList({
-      ...optionPaging,
-      pagination: { page, pageSize },
-    }));
+    dispatch(
+      fetchSymbolList({
+        ...optionPaging,
+        pagination: { page, pageSize },
+      })
+    );
   }, []);
 
   return (
@@ -137,11 +140,17 @@ export default function Edit() {
           render={({ field }) => (
             <>
               {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
-              <Select {...field} label="Type" className="mb-16" onChange={handleChangeSelectSymbol} value={field.value}>
-                {symbolList.map(symbol => (
-                        <MenuItem key={symbol.id} value={symbol.id}>
-                        <em>{symbol.attributes.symbolNm}</em>
-                      </MenuItem>
+              <Select
+                {...field}
+                label="Type"
+                className="mb-16"
+                onChange={handleChangeSelectSymbol}
+                value={field.value}
+              >
+                {symbolList.map((symbol) => (
+                  <MenuItem key={symbol.id} value={symbol.id}>
+                    <em>{symbol.attributes.symbolNm}</em>
+                  </MenuItem>
                 ))}
               </Select>
             </>
@@ -158,7 +167,7 @@ export default function Edit() {
                 type="text"
                 label="ngay len y tuong"
                 variant="outlined"
-               // defaultValue={moment()}
+                // defaultValue={moment()}
               />
             </LocalizationProvider>
           )}
@@ -179,18 +188,22 @@ export default function Edit() {
                 images_upload_handler: (blobInfo, _progress) =>
                   new Promise((resolve, reject) => {
                     const formData = new FormData();
-                    formData.append(`files`, blobInfo.blob(), blobInfo.filename());
-                    UploadService.upload({
-                      info: { name: blobInfo.filename() },
-                      files: blobInfo.blob(),
-                    })
-                      .then((response) => {
-                        resolve(`${HOST_URL}${response.data.upload.data.attributes.url}`);
-                        console.log(response);
+                    console.log(blobInfo);
+                    if (blobInfo.blob().length > 0) {
+                      formData.append(`files`, blobInfo.blob(), blobInfo.filename());
+                      UploadService.upload({
+                        info: { name: blobInfo.filename() },
+                        files: blobInfo.blob(),
                       })
-                      .catch((error) => {
-                        reject(error);
-                      });
+                        .then((response) => {
+                          resolve(`${HOST_URL}${response.data.upload.data.attributes.url}`);
+                          console.log(response);
+                        })
+                        .catch((error) => {
+                          reject(error);
+                        });
+                    }
+
                   }),
                 menubar: 'insert',
                 plugins: [
@@ -219,6 +232,32 @@ export default function Edit() {
                   'alignright alignjustify | bullist numlist outdent indent | ' +
                   'removeformat | help',
                 content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                paste_preprocess: (editor, args) => {
+                  const images = args.content
+                    .match(/<img [^>]*src="[^"]*"[^>]*>/gm)
+                    .map((x) => x.replace(/.*src="([^"]*)".*/, '$1'));
+                  if (images && images.length > 0) {
+                    images.forEach(async (image) => {
+                      // const formData = new FormData();
+                      const imgUrl = blobToImage(image);
+                      const data = await fetch(imgUrl);
+                      const blob = await data.blob();
+                      console.log(image);
+                      console.log(blob);
+                      // formData.append(`files`, blob.blob(), blob.filename());
+                      UploadService.upload({
+                        info: { name: 'new image' },
+                        files: blob,
+                      }).then((response) => {
+                          args.content = args.content.replace(image, response);
+                          // resolve(`${HOST_URL}${response.data.upload.data.attributes.url}`);
+                          console.log(response);
+                        }).catch((error) => {
+                          // reject(error);
+                        });
+                    });
+                  }
+                },
               }}
             />
           )}
